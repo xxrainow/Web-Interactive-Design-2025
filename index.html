@@ -3,330 +3,171 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>버스탈까? 걸어갈까?</title>
+    <title>버스탈까? 걸어갈까? (심플)</title>
     <style>
-      :root {
-        --bg: #f5fbff;
-        --bg-soft: #e9f5ff;
-        --card: #ffffff;
-        --border: #dbe7f3;
-        --text: #1f2e3a;
-        --muted: #6e8090;
-        --ink: #3f5d73;
-        --ok: #2f7d55;
-        --warn: #7d6a31;
-        --pill: #eef6ff;
-        --radius: 16px;
-        --shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
-      }
       * {
         box-sizing: border-box;
       }
-      html,
       body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        background: radial-gradient(
-            900px 260px at 100% -40%,
-            var(--bg-soft),
-            transparent 60%
-          ),
-          radial-gradient(
-            700px 220px at -10% 110%,
-            var(--bg-soft),
-            transparent 60%
-          ),
-          var(--bg);
-        color: var(--text);
         font-family: system-ui, -apple-system, Segoe UI, Roboto,
           'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        margin: 0;
+        background: #f6f7f9;
+        color: #1b2733;
       }
-
       .wrap {
-        max-width: 920px;
-        margin: 0 auto;
-        padding: 28px 16px 64px;
-      }
-
-      header {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-      }
-      .title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 16px;
       }
       h1 {
-        font-size: clamp(20px, 3.5vw, 28px);
-        margin: 0;
+        font-size: 22px;
+        margin: 0 0 12px;
       }
-      .subtitle {
-        color: var(--muted);
-        font-size: 14px;
+      .box {
+        background: #fff;
+        border: 1px solid #d9e0ea;
+        border-radius: 12px;
+        padding: 16px;
       }
-
-      /* 귀여운 버스 아이콘 (하늘색 톤) */
-      .bus {
-        width: 32px;
-        height: 32px;
-        color: var(--ink);
-      }
-
-      .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-      }
-      .inner {
-        padding: 18px;
-      }
-
       .grid {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-
-      h2 {
-        margin: 0 0 12px 0;
-        font-size: 18px;
-      }
-      label {
-        display: block;
-        font-size: 13px;
-        color: var(--muted);
-        margin: 10px 0 6px;
-      }
-      input {
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: #f9fcff;
-        color: var(--text);
-        outline: none;
-        font-size: 16px;
-      }
-      input:focus {
-        border-color: #cfe2f2;
-        box-shadow: 0 0 0 3px rgba(63, 93, 115, 0.12);
-      }
-
-      .form {
-        display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 12px 16px;
       }
-      @media (max-width: 720px) {
-        .form {
+      @media (max-width: 640px) {
+        .grid {
           grid-template-columns: 1fr;
         }
       }
-
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field--full {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 14px;
+        color: #5c6a79;
+        margin: 4px 0 6px;
+      }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cfd6df;
+        border-radius: 10px;
+        font-size: 16px;
+        background: #fff;
+        color: #1b2733;
+        line-height: 1.35;
+      }
+      input:focus {
+        outline: none;
+        border-color: #aeb9c7;
+      }
+      /* number 스피너 제거 (브라우저별) */
+      input[type='number']::-webkit-outer-spin-button,
+      input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type='number'] {
+        -moz-appearance: textfield;
+      }
       .row {
         display: flex;
         gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
-        margin-top: 10px;
       }
-      .btn {
-        appearance: none;
-        border: 1px solid #cfe2f2;
-        background: #eef6fd;
-        color: #294356;
-        font-weight: 700;
+      button {
         padding: 10px 14px;
-        border-radius: 12px;
+        border: 1px solid #cfd6df;
+        background: #eef2f6;
+        border-radius: 10px;
         cursor: pointer;
       }
-      .btn:hover {
-        background: #e9f2fb;
-      }
-      .btn:active {
-        background: #e3ecf6;
-      }
-      .btn.ghost {
-        background: #fff;
-        color: #324f63;
-      }
-      .link {
-        font-size: 12px;
-        color: #4b6a83;
-        text-decoration: underline;
-        cursor: pointer;
-      }
-
-      .result {
-        margin-top: 12px;
-        padding: 14px;
-        border-radius: 12px;
-        background: #f0f7fe;
-        border: 1px dashed #cfe2f2;
-      }
-      .result h3 {
-        margin: 0 0 6px 0;
-        font-size: 16px;
-      }
-      .kv {
-        display: grid;
-        grid-template-columns: 140px 1fr;
-        gap: 8px;
-        font-size: 14px;
-      }
-      .ok {
-        color: var(--ok);
-        font-weight: 800;
-      }
-      .warn {
-        color: var(--warn);
-        font-weight: 800;
+      #out {
+        margin-top: 4px;
+        padding: 12px;
+        border: 1px dashed #cfd6df;
+        border-radius: 10px;
+        background: #f3f6fa;
+        min-height: 44px;
+        white-space: pre-line;
       }
       .muted {
-        color: var(--muted);
-      }
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--pill);
-        border: 1px solid var(--border);
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 12px;
+        color: #6b7683;
+        font-size: 13px;
       }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <header>
-        <div class="title">
-          <svg
-            class="bus"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="4" y="5" width="16" height="10" rx="3" />
-            <path d="M6 15v2M18 15v2M6 10h4M14 10h4" />
-            <circle cx="7" cy="19" r="1" />
-            <circle cx="17" cy="19" r="1" />
-          </svg>
-          <h1>버스탈까? 걸어갈까?</h1>
-        </div>
-        <div class="subtitle">
-          버스 도착예정시간과 도보 도착예정시간을 비교하여 더 빠른 쪽을
-          추천해줍니다
-        </div>
-      </header>
-
-      <main class="grid">
-        <section class="card">
-          <div class="inner">
-            <h2>입력</h2>
-            <div class="form">
-              <div>
-                <label for="walkAll">목적지까지 도보 시간 (분)</label>
-                <input
-                  id="walkAll"
-                  type="number"
-                  min="1"
-                  placeholder="예: 22"
-                />
-              </div>
-              <div>
-                <label for="toStop">정류장까지 걷는 시간 (분)</label>
-                <input id="toStop" type="number" min="0" placeholder="예: 5" />
-              </div>
-              <div>
-                <label for="headway">버스 배차 간격 (분)</label>
-                <input
-                  id="headway"
-                  type="number"
-                  min="1"
-                  step="0.1"
-                  placeholder="예: 10"
-                />
-              </div>
-              <div>
-                <label for="ride">버스 탑승 소요 (분)</label>
-                <input
-                  id="ride"
-                  type="number"
-                  min="1"
-                  step="0.1"
-                  placeholder="예: 12"
-                />
-              </div>
-              <div>
-                <label for="nextBus">다음 버스까지 남은 시간 (분, 선택)</label>
-                <input
-                  id="nextBus"
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  placeholder="예: 3 (모르면 비워두기)"
-                />
-              </div>
-              <div>
-                <label>&nbsp;</label>
-                <div class="row">
-                  <button id="calc" class="btn">계산하기</button>
-                  <button id="reset" class="btn ghost">초기화</button>
-                  <span id="fill" class="link">예시 채우기</span>
-                </div>
-              </div>
-            </div>
-
-            <div id="out" class="result" aria-live="polite">
-              <h3>결과</h3>
-              <div class="muted" style="font-size: 13px">
-                값을 입력하고 <b>계산하기</b>를 눌러주세요.
-              </div>
+      <h1>버스탈까? 걸어갈까?</h1>
+      <div class="box">
+        <div class="grid">
+          <div class="field">
+            <label for="walkAll">목적지까지 도보 시간 (분)</label>
+            <input id="walkAll" type="number" min="1" placeholder="예: 22" />
+          </div>
+          <div class="field">
+            <label for="toStop">정류장까지 걷는 시간 (분)</label>
+            <input id="toStop" type="number" min="0" placeholder="예: 5" />
+          </div>
+          <div class="field">
+            <label for="headway">버스 배차 간격 (분)</label>
+            <input id="headway" type="number" min="1" placeholder="예: 10" />
+          </div>
+          <div class="field">
+            <label for="ride">버스 탑승 소요 (분)</label>
+            <input id="ride" type="number" min="1" placeholder="예: 12" />
+          </div>
+          <div class="field field--full">
+            <label for="nextBus">다음 버스까지 남은 시간 (분, 선택)</label>
+            <input
+              id="nextBus"
+              type="number"
+              min="0"
+              placeholder="예: 3 (모르면 비워두기)"
+            />
+          </div>
+          <div class="field field--full">
+            <div class="row">
+              <button id="calc">계산하기</button>
+              <button id="reset">초기화</button>
             </div>
           </div>
-        </section>
-      </main>
+          <div class="field field--full">
+            <div id="out">
+              <span class="muted"
+                >값을 입력하고 <b>계산하기</b>를 눌러주세요.</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-      const $ = (s) => document.querySelector(s);
-
+      function fmt(n) {
+        return Number.isFinite(n) ? Math.round(n) : '-';
+      }
       function waitTime(toStop, headway, nextBus) {
         if (Number.isFinite(nextBus)) {
-          if (nextBus >= toStop) return nextBus - toStop; // 바로 오는 버스 탑승
-          const lag = (toStop - nextBus) % headway; // 놓친 시간 차이
-          return lag === 0 ? 0 : headway - lag; // 다음 회차까지 대기
+          if (nextBus >= toStop) return nextBus - toStop;
+          var lag = (toStop - nextBus) % headway;
+          return lag === 0 ? 0 : headway - lag;
         }
-        return headway / 2; // 정보 없을 때 평균 대기시간 가정
+        return headway / 2;
       }
-
-      function fmt(x) {
-        return Number.isFinite(x) ? x.toFixed(1).replace(/\.0$/, '') : '-';
-      }
-
       function calc() {
-        const walkAll = +$('#walkAll').value;
-        const toStop = +$('#toStop').value;
-        const headway = +$('#headway').value;
-        const ride = +$('#ride').value;
-        const nextVal = $('#nextBus').value;
-        const nextBus = nextVal === '' ? NaN : +nextVal;
-        const out = $('#out');
+        var walkAll = +document.getElementById('walkAll').value;
+        var toStop = +document.getElementById('toStop').value;
+        var headway = +document.getElementById('headway').value;
+        var ride = +document.getElementById('ride').value;
+        var nextVal = document.getElementById('nextBus').value;
+        var nextBus = nextVal === '' ? NaN : +nextVal;
+        var out = document.getElementById('out');
 
         if (
           ![walkAll, toStop, headway, ride].every(Number.isFinite) ||
@@ -335,78 +176,58 @@
           headway <= 0 ||
           ride <= 0
         ) {
-          out.innerHTML = `<h3>결과</h3><div class="warn pill">입력을 확인하세요. (도보/배차/탑승 시간은 0보다 커야 합니다.)</div>`;
+          out.textContent =
+            '입력을 확인하세요. (도보/배차/탑승 시간은 0보다 커야 합니다.)';
           return;
         }
         if (nextVal !== '' && (!Number.isFinite(nextBus) || nextBus < 0)) {
-          out.innerHTML = `<h3>결과</h3><div class="warn pill">다음 버스까지 남은 시간은 0 이상이어야 합니다.</div>`;
+          out.textContent = '다음 버스까지 남은 시간은 0 이상이어야 합니다.';
           return;
         }
 
-        const wait = waitTime(toStop, headway, nextBus);
-        const etaBus = toStop + wait + ride;
-        const etaWalk = walkAll;
-        const diff = Math.abs(etaBus - etaWalk);
+        var wait = waitTime(toStop, headway, nextBus);
+        var etaBus = toStop + wait + ride;
+        var etaWalk = walkAll;
 
-        let verdict;
+        var msg =
+          '버스 ETA: ' +
+          fmt(etaBus) +
+          '분 (대기 ' +
+          fmt(wait) +
+          '분 포함)\n' +
+          '도보 ETA: ' +
+          fmt(etaWalk) +
+          '분\n';
         if (etaBus < etaWalk)
-          verdict = `<span class="ok pill">🚌 버스가 더 빨라요 · ${fmt(
-            diff
-          )}분 이득</span>`;
+          msg +=
+            '추천: 버스가 더 빨라요 (약 ' + fmt(etaWalk - etaBus) + '분 이득)';
         else if (etaBus > etaWalk)
-          verdict = `<span class="warn pill">🚶 걷는 게 더 빨라요 · ${fmt(
-            diff
-          )}분 이득</span>`;
-        else verdict = `<span class="pill">🤝 둘이 거의 비슷해요</span>`;
+          msg +=
+            '추천: 걷는 게 더 빨라요 (약 ' + fmt(etaBus - etaWalk) + '분 이득)';
+        else msg += '추천: 둘이 거의 비슷해요';
 
-        out.innerHTML = `
-        <h3>결과</h3>
-        <div class="kv">
-          <div>버스 ETA</div><div>${fmt(etaBus)} 분 (대기 ${fmt(
-          wait
-        )}분 포함)</div>
-          <div>도보 ETA</div><div>${fmt(etaWalk)} 분</div>
-          <div>추천</div><div>${verdict}</div>
-        </div>
-      `;
+        out.textContent = msg;
       }
-
       function reset() {
-        ['#walkAll', '#toStop', '#headway', '#ride', '#nextBus'].forEach(
-          (sel) => {
-            const el = $(sel);
-            if (el) el.value = '';
-          }
-        );
-        $(
-          '#out'
-        ).innerHTML = `<h3>결과</h3><div class=muted style="font-size:13px">값을 입력하고 <b>계산하기</b>를 눌러주세요.</div>`;
+        ['walkAll', 'toStop', 'headway', 'ride', 'nextBus'].forEach(function (
+          id
+        ) {
+          var el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        document.getElementById('out').innerHTML =
+          '<span class="muted">값을 입력하고 <b>계산하기</b>를 눌러주세요.</span>';
       }
-
-      // Events
-      $('#calc').addEventListener('click', calc);
-      $('#reset').addEventListener('click', reset);
-      $('#fill').addEventListener('click', () => {
-        const sample = {
-          '#walkAll': 22,
-          '#toStop': 5,
-          '#headway': 10,
-          '#ride': 12,
-          '#nextBus': 3,
-        };
-        Object.entries(sample).forEach(([sel, val]) => {
-          const t = document.querySelector(sel);
-          if (t) t.value = val;
+      document.getElementById('calc').addEventListener('click', calc);
+      document.getElementById('reset').addEventListener('click', reset);
+      ['walkAll', 'toStop', 'headway', 'ride', 'nextBus'].forEach(function (
+        id
+      ) {
+        var el = document.getElementById(id);
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') calc();
         });
       });
-      ['#walkAll', '#toStop', '#headway', '#ride', '#nextBus'].forEach(
-        (sel) => {
-          const el = $(sel);
-          el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') calc();
-          });
-        }
-      );
     </script>
   </body>
 </html>
