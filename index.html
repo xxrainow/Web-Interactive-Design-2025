@@ -3,231 +3,257 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>버스탈까? 걸어갈까? (심플)</title>
+    <title>생일 케이크 — 초 드래그해서 불 켜기</title>
     <style>
-      * {
-        box-sizing: border-box;
-      }
       body {
-        font-family: system-ui, -apple-system, Segoe UI, Roboto,
-          'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
         margin: 0;
-        background: #f6f7f9;
-        color: #1b2733;
+        background: url('background.jpg') center/cover no-repeat fixed;
+        color: #e6eefb;
+        font-family: sans-serif;
       }
       .wrap {
-        max-width: 720px;
-        margin: 40px auto;
-        padding: 16px;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px;
       }
       h1 {
-        font-size: 22px;
-        margin: 0 0 12px;
+        margin-bottom: 8px;
       }
-      .box {
-        background: #fff;
-        border: 1px solid #d9e0ea;
-        border-radius: 12px;
-        padding: 16px;
-      }
-      .grid {
+      .stage {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px 16px;
+        grid-template-columns: 1fr 300px;
+        gap: 16px;
       }
-      @media (max-width: 640px) {
-        .grid {
-          grid-template-columns: 1fr;
+      .board {
+        position: relative;
+        aspect-ratio: 16/10;
+        border-radius: 12px;
+        overflow: hidden;
+        background: url('cake.png') center/cover no-repeat;
+      }
+      .dropzone {
+        position: absolute;
+        left: 50%;
+        top: 28%;
+        width: 30%;
+        height: 20%;
+        transform: translateX(-50%);
+        border-radius: 60px;
+        outline: 2px dashed rgba(255, 255, 255, 0.3);
+        outline-offset: -6px;
+      }
+      .dropzone.ok {
+        outline-color: #22c55e;
+        background: rgba(34, 197, 94, 0.08);
+      }
+      .candle {
+        position: absolute;
+        left: 6%;
+        bottom: 6%;
+        width: 56px;
+        height: 150px;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+      }
+      .candle.drag {
+        cursor: grabbing;
+        transform: scale(1.06);
+      }
+      .stick {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 18px;
+        height: 120px;
+        background: linear-gradient(#ffe3e3, #ffc1c1);
+        border-radius: 9px;
+        border: 1px solid #f5a5a5;
+      }
+      .wick {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 12px;
+        background: #333;
+      }
+      .flame {
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 28px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at 50% 60%,
+          #ffd27a 0%,
+          #ff8a00 55%,
+          transparent 70%
+        );
+        filter: drop-shadow(0 0 10px rgba(255, 153, 0, 0.9));
+        animation: flicker 0.12s infinite alternate;
+        opacity: 0;
+
+      .candle.lit .flame {
+        opacity: 1;
+      }
+      @keyframes flicker {
+        from {
+          transform: translateX(-50%) scㄴale(1);
+        }
+        to {
+          transform: translateX(-50%) scale(1.08) translateY(-1px);
         }
       }
-      .field {
-        display: flex;
-        flex-direction: column;
-      }
-      .field--full {
-        grid-column: 1 / -1;
-      }
-      label {
-        font-size: 14px;
-        color: #5c6a79;
-        margin: 4px 0 6px;
-      }
-      input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #cfd6df;
-        border-radius: 10px;
-        font-size: 16px;
-        background: #fff;
-        color: #1b2733;
-        line-height: 1.35;
-      }
-      input:focus {
-        outline: none;
-        border-color: #aeb9c7;
-      }
-      /* number 스피너 제거 (브라우저별) */
-      input[type='number']::-webkit-outer-spin-button,
-      input[type='number']::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-      input[type='number'] {
-        -moz-appearance: textfield;
-      }
-      .row {
-        display: flex;
-        gap: 8px;
-      }
-      button {
-        padding: 10px 14px;
-        border: 1px solid #cfd6df;
-        background: #eef2f6;
-        border-radius: 10px;
-        cursor: pointer;
-      }
-      #out {
-        margin-top: 4px;
+      .panel {
+        background: transparent;
+        border-radius: 12px;
         padding: 12px;
-        border: 1px dashed #cfd6df;
-        border-radius: 10px;
-        background: #f3f6fa;
-        min-height: 44px;
-        white-space: pre-line;
       }
-      .muted {
-        color: #6b7683;
-        font-size: 13px;
+
+      .btn.play {
+        background: #22c55e;
+        color: #fff;
+      }
+      .btn.stop {
+        background: #ef4444;
+        color: #fff;
       }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <h1>버스탈까? 걸어갈까?</h1>
-      <div class="box">
-        <div class="grid">
-          <div class="field">
-            <label for="walkAll">목적지까지 도보 시간 (분)</label>
-            <input id="walkAll" type="number" min="1" placeholder="예: 22" />
-          </div>
-          <div class="field">
-            <label for="toStop">정류장까지 걷는 시간 (분)</label>
-            <input id="toStop" type="number" min="0" placeholder="예: 5" />
-          </div>
-          <div class="field">
-            <label for="headway">버스 배차 간격 (분)</label>
-            <input id="headway" type="number" min="1" placeholder="예: 10" />
-          </div>
-          <div class="field">
-            <label for="ride">버스 탑승 소요 (분)</label>
-            <input id="ride" type="number" min="1" placeholder="예: 12" />
-          </div>
-          <div class="field field--full">
-            <label for="nextBus">다음 버스까지 남은 시간 (분, 선택)</label>
-            <input
-              id="nextBus"
-              type="number"
-              min="0"
-              placeholder="예: 3 (모르면 비워두기)"
-            />
-          </div>
-          <div class="field field--full">
-            <div class="row">
-              <button id="calc">계산하기</button>
-              <button id="reset">초기화</button>
-            </div>
-          </div>
-          <div class="field field--full">
-            <div id="out">
-              <span class="muted"
-                >값을 입력하고 <b>계산하기</b>를 눌러주세요.</span
-              >
+      <h1>생일 축하해 🎂</h1>
+      <p>초를 케이크 위에 올려보세요.</p>
+      <div class="stage">
+        <div class="board" id="board">
+          <div class="dropzone" id="drop"></div>
+          <div class="candle" id="candle">
+            <div class="stick">
+              <div class="wick"></div>
+              <div class="flame"></div>
             </div>
           </div>
         </div>
+        <aside class="panel">
+          <p>이미지를 눌러보세요</p>
+          <img
+            id="phone"
+            class="phone"
+            src="music.png"
+            alt="전화"
+            height="200
+        "
+          />
+          <audio id="song" src="happybirthday.wav" preload="auto"></audio>
+        </aside>
       </div>
     </div>
 
     <script>
-      function fmt(n) {
-        return Number.isFinite(n) ? Math.round(n) : '-';
-      }
-      function waitTime(toStop, headway, nextBus) {
-        if (Number.isFinite(nextBus)) {
-          if (nextBus >= toStop) return nextBus - toStop;
-          var lag = (toStop - nextBus) % headway;
-          return lag === 0 ? 0 : headway - lag;
+      const el = {
+        board: document.getElementById('board'),
+        drop: document.getElementById('drop'),
+        candle: document.getElementById('candle'),
+        playSong: document.getElementById('playSong'),
+        stopSong: document.getElementById('stopSong'),
+        phone: document.getElementById('phone'),
+      };
+
+      // Candle Dragging
+      (function () {
+        const c = el.candle;
+        const drop = el.drop;
+        const board = el.board;
+        let dragging = false,
+          startX = 0,
+          startY = 0,
+          ox = 0,
+          oy = 0;
+
+        function onDown(e) {
+          dragging = true;
+          c.classList.add('drag');
+          c.setPointerCapture(e.pointerId);
+          const r = c.getBoundingClientRect(),
+            b = board.getBoundingClientRect();
+          startX = e.clientX;
+          startY = e.clientY;
+          ox = r.left - b.left;
+          oy = r.top - b.top;
         }
-        return headway / 2;
-      }
-      function calc() {
-        var walkAll = +document.getElementById('walkAll').value;
-        var toStop = +document.getElementById('toStop').value;
-        var headway = +document.getElementById('headway').value;
-        var ride = +document.getElementById('ride').value;
-        var nextVal = document.getElementById('nextBus').value;
-        var nextBus = nextVal === '' ? NaN : +nextVal;
-        var out = document.getElementById('out');
-
-        if (
-          ![walkAll, toStop, headway, ride].every(Number.isFinite) ||
-          walkAll <= 0 ||
-          toStop < 0 ||
-          headway <= 0 ||
-          ride <= 0
-        ) {
-          out.textContent =
-            '입력을 확인하세요. (도보/배차/탑승 시간은 0보다 커야 합니다.)';
-          return;
+        function onMove(e) {
+          if (!dragging) return;
+          const b = board.getBoundingClientRect();
+          const x = e.clientX - b.left - (startX - b.left - ox);
+          const y = e.clientY - b.top - (startY - b.top - oy);
+          c.style.left = (x / b.width) * 100 + '%';
+          c.style.top = (y / b.height) * 100 + '%';
+          drop.classList.toggle('ok', isOverDrop());
         }
-        if (nextVal !== '' && (!Number.isFinite(nextBus) || nextBus < 0)) {
-          out.textContent = '다음 버스까지 남은 시간은 0 이상이어야 합니다.';
-          return;
+        function onUp(e) {
+          if (!dragging) return;
+          dragging = false;
+          c.classList.remove('drag');
+          c.releasePointerCapture(e.pointerId);
+          drop.classList.remove('ok');
+          if (isOverDrop()) {
+            snapToDrop();
+            lightCandle();
+          }
         }
+        function isOverDrop() {
+          const cb = c.getBoundingClientRect();
+          const db = drop.getBoundingClientRect();
+          const cx = cb.left + cb.width / 2;
+          const cy = cb.top + cb.height * 0.1;
+          return cx > db.left && cx < db.right && cy > db.top && cy < db.bottom;
+        }
+        function snapToDrop() {
+          const b = board.getBoundingClientRect();
+          const db = drop.getBoundingClientRect();
+          const x =
+            db.left +
+            db.width / 2 -
+            b.left -
+            c.getBoundingClientRect().width / 2;
+          const y = db.top - b.top;
+          c.style.left = (x / b.width) * 100 + '%';
+          c.style.top = (y / b.height) * 100 + '%';
+        }
+        c.addEventListener('pointerdown', onDown);
+        c.addEventListener('pointermove', onMove);
+        c.addEventListener('pointerup', onUp);
+        c.addEventListener('pointercancel', onUp);
+      })();
 
-        var wait = waitTime(toStop, headway, nextBus);
-        var etaBus = toStop + wait + ride;
-        var etaWalk = walkAll;
-
-        var msg =
-          '버스 ETA: ' +
-          fmt(etaBus) +
-          '분 (대기 ' +
-          fmt(wait) +
-          '분 포함)\n' +
-          '도보 ETA: ' +
-          fmt(etaWalk) +
-          '분\n';
-        if (etaBus < etaWalk)
-          msg +=
-            '추천: 버스가 더 빨라요 (약 ' + fmt(etaWalk - etaBus) + '분 이득)';
-        else if (etaBus > etaWalk)
-          msg +=
-            '추천: 걷는 게 더 빨라요 (약 ' + fmt(etaBus - etaWalk) + '분 이득)';
-        else msg += '추천: 둘이 거의 비슷해요';
-
-        out.textContent = msg;
+      const candle = new Audio('candle.wav');
+      function lightCandle() {
+        el.candle.classList.add('lit');
+        candle.currentTime = 0;
+        candle.play();
       }
-      function reset() {
-        ['walkAll', 'toStop', 'headway', 'ride', 'nextBus'].forEach(function (
-          id
-        ) {
-          var el = document.getElementById(id);
-          if (el) el.value = '';
-        });
-        document.getElementById('out').innerHTML =
-          '<span class="muted">값을 입력하고 <b>계산하기</b>를 눌러주세요.</span>';
-      }
-      document.getElementById('calc').addEventListener('click', calc);
-      document.getElementById('reset').addEventListener('click', reset);
-      ['walkAll', 'toStop', 'headway', 'ride', 'nextBus'].forEach(function (
-        id
-      ) {
-        var el = document.getElementById(id);
-        el.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') calc();
-        });
+
+      const song = document.getElementById('song');
+
+      // --- 전화 클릭 ---
+      el.phone.addEventListener('click', () => {
+        if (song.paused) {
+          song.play();
+          el.phone.classList.add('playing');
+        } else {
+          song.pause();
+          el.phone.classList.remove('playing');
+        }
       });
+
+      song.addEventListener('ended', () =>
+        el.phone.classList.remove('playing')
+      );
     </script>
   </body>
 </html>
