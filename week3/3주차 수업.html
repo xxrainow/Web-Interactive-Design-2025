@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <input id="myType" type="text" value="하하" />
+    <input id="myColor" type="color" value="#ff00ff" />
+    <input id="myDate" type="date" value="2025-09-17" />
+    <div id="monitor" style="font-size: 4rem"></div>
+  </body>
+  <script>
+    myType.oninput = function () {
+      monitor.innerHTML = myType.value;
+    };
+    myColor.oninput = function () {
+      document.body.style.background = this.value;
+    };
+    myDate.oninput = function () {
+      monitor.innerHTML += this.value;
+    };
+  </script>
+</html>

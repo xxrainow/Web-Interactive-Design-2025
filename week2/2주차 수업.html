@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title></title>
+  </head>
+
+  <body>
+    <audio id="beachSound" src="beach.wav"></audio>
+
+    <audio id="forestSound" src="forest.mp3"></audio>
+
+    <img
+      id="beachButton"
+      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXJuMnhzZmpnc20xanNqZW4yejdlZGNsYmk0OWltNHAyZnRhem14cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WWYSFIZo4fsLC/giphy.gif"
+    />
+
+    <img
+      id="forestButton"
+      src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHAyaXJna3RzcHp1b3EwNHc2cmwwZWdwd2lyZGVldzdwZzdjMmVhaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uf3jumi0zzUv6/giphy.gif"
+    />
+
+    <script>
+      bPlay = false;
+
+      beachButton.onclick = function () {
+        if (bPlay == true) {
+          beachSound.pause();
+
+          bPlay = false;
+        } else {
+          beachSound.play();
+
+          bPlay = true;
+        }
+      };
+
+      fPlay = false;
+
+      forestButton.onclick = function () {
+        if (fPlay == true) {
+          forestSound.pause();
+
+          fPlay = false;
+        } else {
+          forestSound.play();
+
+          fPlay = true;
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>생일 케이크 — 초 드래그해서 불 켜기</title>
+    <style>
+      body {
+        margin: 0;
+        background: url('background.jpg') center/cover no-repeat fixed;
+        color: #e6eefb;
+        font-family: sans-serif;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        margin-bottom: 8px;
+      }
+      .stage {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 16px;
+      }
+      .board {
+        position: relative;
+        aspect-ratio: 16/10;
+        border-radius: 12px;
+        overflow: hidden;
+        background: url('cake.png') center/cover no-repeat;
+      }
+      .dropzone {
+        position: absolute;
+        left: 50%;
+        top: 28%;
+        width: 30%;
+        height: 20%;
+        transform: translateX(-50%);
+        border-radius: 60px;
+        outline: 2px dashed rgba(255, 255, 255, 0.3);
+        outline-offset: -6px;
+      }
+      .dropzone.ok {
+        outline-color: #22c55e;
+        background: rgba(34, 197, 94, 0.08);
+      }
+      .candle {
+        position: absolute;
+        left: 6%;
+        bottom: 6%;
+        width: 56px;
+        height: 150px;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+      }
+      .candle.drag {
+        cursor: grabbing;
+        transform: scale(1.06);
+      }
+      .stick {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 18px;
+        height: 120px;
+        background: linear-gradient(#ffe3e3, #ffc1c1);
+        border-radius: 9px;
+        border: 1px solid #f5a5a5;
+      }
+      .wick {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 12px;
+        background: #333;
+      }
+      .flame {
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 28px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at 50% 60%,
+          #ffd27a 0%,
+          #ff8a00 55%,
+          transparent 70%
+        );
+        filter: drop-shadow(0 0 10px rgba(255, 153, 0, 0.9));
+        animation: flicker 0.12s infinite alternate;
+        opacity: 0;
+      }
+      .candle.lit .flame {
+        opacity: 1;
+      }
+      @keyframes flicker {
+        from {
+          transform: translateX(-50%) scale(1);
+        }
+        to {
+          transform: translateX(-50%) scale(1.08) translateY(-1px);
+        }
+      }
+      .panel {
+        background: transparent;
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .btn.play {
+        background: #22c55e;
+        color: #fff;
+      }
+      .btn.stop {
+        background: #ef4444;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Happy Birthday 🎂</h1>
+      <p>초를 케이크 위에 올려보세요.</p>
+      <div class="stage">
+        <div class="board" id="board">
+          <div class="dropzone" id="drop"></div>
+          <div class="candle" id="candle">
+            <div class="stick">
+              <div class="wick"></div>
+              <div class="flame"></div>
+            </div>
+          </div>
+        </div>
+        <aside class="panel">
+          <p>이미지를 눌러보세요</p>
+          <img
+            id="phone"
+            class="phone"
+            src="music.png"
+            alt="전화"
+            height="200
+        "
+          />
+          <audio id="song" src="happybirthday.wav" preload="auto"></audio>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      const el = {
+        board: document.getElementById('board'),
+        drop: document.getElementById('drop'),
+        candle: document.getElementById('candle'),
+        playSong: document.getElementById('playSong'),
+        stopSong: document.getElementById('stopSong'),
+        phone: document.getElementById('phone'),
+      };
+
+      // Candle Dragging
+      (function () {
+        const c = el.candle;
+        const drop = el.drop;
+        const board = el.board;
+        let dragging = false,
+          startX = 0,
+          startY = 0,
+          ox = 0,
+          oy = 0;
+
+        function onDown(e) {
+          dragging = true;
+          c.classList.add('drag');
+          c.setPointerCapture(e.pointerId);
+          const r = c.getBoundingClientRect(),
+            b = board.getBoundingClientRect();
+          startX = e.clientX;
+          startY = e.clientY;
+          ox = r.left - b.left;
+          oy = r.top - b.top;
+        }
+        function onMove(e) {
+          if (!dragging) return;
+          const b = board.getBoundingClientRect();
+          const x = e.clientX - b.left - (startX - b.left - ox);
+          const y = e.clientY - b.top - (startY - b.top - oy);
+          c.style.left = (x / b.width) * 100 + '%';
+          c.style.top = (y / b.height) * 100 + '%';
+          drop.classList.toggle('ok', isOverDrop());
+        }
+        function onUp(e) {
+          if (!dragging) return;
+          dragging = false;
+          c.classList.remove('drag');
+          c.releasePointerCapture(e.pointerId);
+          drop.classList.remove('ok');
+          if (isOverDrop()) {
+            snapToDrop();
+            lightCandle();
+          }
+        }
+        function isOverDrop() {
+          const cb = c.getBoundingClientRect();
+          const db = drop.getBoundingClientRect();
+          const cx = cb.left + cb.width / 2;
+          const cy = cb.top + cb.height * 0.1;
+          return cx > db.left && cx < db.right && cy > db.top && cy < db.bottom;
+        }
+        function snapToDrop() {
+          const b = board.getBoundingClientRect();
+          const db = drop.getBoundingClientRect();
+          const x =
+            db.left +
+            db.width / 2 -
+            b.left -
+            c.getBoundingClientRect().width / 2;
+          const y = db.top - b.top;
+          c.style.left = (x / b.width) * 100 + '%';
+          c.style.top = (y / b.height) * 100 + '%';
+        }
+        c.addEventListener('pointerdown', onDown);
+        c.addEventListener('pointermove', onMove);
+        c.addEventListener('pointerup', onUp);
+        c.addEventListener('pointercancel', onUp);
+      })();
+
+      const candle = new Audio('candle.wav');
+      function lightCandle() {
+        el.candle.classList.add('lit');
+        candle.currentTime = 0;
+        candle.play();
+      }
+
+      const song = document.getElementById('song');
+
+      // --- 전화 클릭 ---
+      el.phone.addEventListener('click', () => {
+        if (song.paused) {
+          song.play();
+          el.phone.classList.add('playing');
+        } else {
+          song.pause();
+          el.phone.classList.remove('playing');
+        }
+      });
+
+      song.addEventListener('ended', () =>
+        el.phone.classList.remove('playing')
+      );
+    </script>
+  </body>
+</html>

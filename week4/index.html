@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?
+    family=Noto+Sans+KR
+    &family=Nanum+Myeongjo
+    &family=Roboto+Slab
+    &family=IBM+Plex+Mono
+    &family=Bungee
+    &family=Dancing+Script
+    &family=SUSE+Mono
+    &family=Nanum+Gothic
+    &family=Hahmlet
+    &family=Kirang+Haerang
+    &family=Diphylleia
+    &display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hahmlet&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kirang+Haerang&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Diphylleia&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>타이포</title>
+
+    <style>
+      :root {
+        /* 프리뷰에 적용될 타이포 변수들만 유지 */
+
+        /* font-family */
+        --ff: system-ui, -apple-system, Segoe UI, Roboto, 'Apple SD Gothic Neo',
+          'Malgun Gothic', sans-serif;
+        /* font-size */
+        --fs: 96px;
+        /* letter-spacing */
+        --ls: 0em;
+        /* line-height */
+        --lh: 1.2;
+        /* font-weight */
+        --fw: 700;
+      }
+
+      h1 {
+        font-family: 'Hahmlet', serif;
+      }
+
+      /* html, body { height: 100%; } */
+      body {
+        margin: 0;
+        background: #000;
+        color: #fff;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto,
+          'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 320px 1fr; /* 좌측 패널 / 우측 프리뷰 */
+      }
+
+      /* 좌측 패널 */
+      aside {
+        background: #111;
+        padding: 16px 14px;
+        height: 100vh;
+        overflow: auto;
+      }
+      h1 {
+        font-size: 30px;
+      }
+      .row {
+        margin: 10px 0;
+        font-family: 'Hahmlet', serif;
+      }
+      label {
+        font-size: 15px;
+        color: #ddd;
+      }
+      input[type='range'] {
+        width: 100%;
+      }
+      select,
+      input[type='text'],
+      textarea {
+        width: 95%;
+        padding: 8px 10px;
+        background: #0f0f0f;
+        color: #eee;
+        font-size: 14px;
+      }
+
+      input[type='color'] {
+        width: 100%;
+        height: 36px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .sample {
+        margin-top: 10px;
+        display: grid;
+      }
+
+      /* 우측 프리뷰 */
+      main {
+        position: relative;
+      }
+      .inputArea {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+      }
+      .src {
+        background: rgba(255, 255, 255, 0.04);
+        min-height: 84px;
+        color: #eee;
+      }
+
+      /* 타이포 보여지는 화면 */
+      .preview {
+        position: absolute;
+        inset: 0;
+        padding: 130px 28px 28px;
+        overflow: auto;
+        font-family: var(--ff);
+        font-size: var(--fs);
+        letter-spacing: var(--ls);
+        line-height: var(--lh);
+        font-weight: var(--fw);
+        color: #ffffff;
+        word-break: keep-all;
+        white-space: pre-wrap;
+      }
+
+      .colorChange {
+        accent-color: #d7d7d7;
+      }
+
+      @font-face {
+        font-family: 'Bitcount Prop Double Ink';
+        src: url('./fonts/BitcountPropDoubleInk.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      /* 좁은 화면에서는 위/아래 배치 */
+      @media (max-width: 880px) {
+        body {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr;
+        }
+        aside {
+          position: static;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid #222;
+        }
+        main {
+          min-height: 60vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 좌측 컨트롤 -->
+    <aside>
+      <h1>Typo</h1>
+
+      <div class="row">
+        <label for="family">font</label>
+        <select id="family" onchange="apply()">
+          <option value='"Noto Sans KR", system-ui' selected>
+            Noto Sans KR (Sans)
+          </option>
+          <option value='"Nanum Myeongjo", NanumMyeongjo'>
+            Nanum Myeongjo (Serif)
+          </option>
+          <option value='"IBM Plex Mono", monospace'>IBM Plex Mono</option>
+          <option value='"Bungee", cursive'>Bungee</option>
+          <option value='"Dancing Script", cursive'>Dancing Script</option>
+          <option value='"SUSE Mono", monospace'>SUSE Mono</option>
+          <option value='"Bitcount Prop Double Ink", sans-serif'>
+            Bitcount Prop Double Ink
+          </option>
+          <option value='"Nanum Gothic", sans-serif'>Nanum Gothic</option>
+          <option value='"Hahmlet", serif'>Hahmlet</option>
+          <option value='"Kirang Haerang", cursive'>Kirang Haerang</option>
+          <option value='"Diphylleia", serif'>Diphylleia</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="size">size (px)</label>
+        <input
+          id="size"
+          class="colorChange"
+          type="range"
+          min="24"
+          max="200"
+          value="96"
+          oninput="apply()"
+        />
+      </div>
+
+      <div class="row">
+        <label for="weight">weight (100–900)</label>
+        <input
+          id="weight"
+          class="colorChange"
+          type="range"
+          min="100"
+          max="900"
+          step="100"
+          value="700"
+          oninput="apply()"
+        />
+      </div>
+
+      <div class="row">
+        <label for="ls">letter spacing (em)</label>
+        <input
+          id="ls"
+          class="colorChange"
+          type="range"
+          min="-0.10"
+          max="0.50"
+          step="0.01"
+          value="0"
+          oninput="apply()"
+        />
+      </div>
+
+      <div class="row">
+        <label for="lh">space between lines</label>
+        <input
+          id="lh"
+          class="colorChange"
+          type="range"
+          min="0.80"
+          max="2.40"
+          step="0.01"
+          value="1.2"
+          oninput="apply()"
+        />
+      </div>
+
+      <div class="row">
+        <label for="bgColor">Background Color</label>
+        <input id="bgColor" type="color" oninput="changeBgColor()" />
+      </div>
+
+      <div class="sample">
+        <button onclick="fillSample()">Sample</button>
+      </div>
+    </aside>
+
+    <!-- 우측 입력 + 프리뷰 -->
+    <main>
+      <div class="inputArea">
+        <textarea
+          id="src"
+          class="src"
+          placeholder="입력하는 곳"
+          oninput="syncText()"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div id="preview" class="preview"></div>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      const family = document.getElementById('family');
+      const size = document.getElementById('size');
+      const weight = document.getElementById('weight');
+      const ls = document.getElementById('ls');
+      const lh = document.getElementById('lh');
+      const src = document.getElementById('src');
+      const preview = document.getElementById('preview');
+      const ph = document.getElementById('ph');
+      const pill = document.getElementById('pill');
+      const bgColor = document.getElementById('bgColor');
+
+      function apply() {
+        root.style.setProperty('--ff', family.value);
+        root.style.setProperty('--fs', size.value + 'px');
+        root.style.setProperty('--ls', Number(ls.value).toFixed(2) + 'em');
+        root.style.setProperty('--lh', Number(lh.value).toFixed(2));
+        root.style.setProperty('--fw', weight.value);
+        updatePill();
+      }
+
+      function syncText() {
+        preview.textContent = src.value;
+        ph.style.display = src.value ? 'none' : 'block';
+      }
+
+      function changeBgColor() {
+        document.body.style.background = bgColor.value;
+      }
+
+      function fillSample() {
+        src.value =
+          'Wow!!!! This is My Typography Lab Website 안녕하세요 저는 서울과학기술대학교 웹인터렉션디자인 수업을 듣고있는 신지우라고합니다 옆에 range 바를 움직여서 글자의 폰트, 사이즈, 행간, 자간을 조절해보세요';
+        syncText();
+      }
+
+      function updatePill() {
+        const cs = getComputedStyle(root);
+        const ff = cs.getPropertyValue('--ff').trim().split(',')[0];
+        const fs = cs.getPropertyValue('--fs').trim();
+        const lss = cs.getPropertyValue('--ls').trim();
+        const lhh = cs.getPropertyValue('--lh').trim();
+        const fw = cs.getPropertyValue('--fw').trim();
+        pill.textContent = `font: ${ff} · ${fs} · ls ${lss} · lh ${lhh} · w ${fw}`;
+      }
+
+      // 초기화
+      apply();
+      syncText();
+    </script>
+  </body>
+</html>
