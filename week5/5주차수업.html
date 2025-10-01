@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+        window. onkeydown = function(e){
+      console. Log(e.code, e.keyCode);
+
+      if(e.keyCode == 37){
+      let left = parseInt(ghost.style.left);
+      left = left - 100;
+      ghost.style.left = left + "px";
+      ghost.style.transform = "rotateY(180deg)";
+      } else if(e.keyCode == 38){
+      let top = parseInt(ghost.style.top);
+      top = top - 100;
+      ghost.style.top = top + "px";
+      } else if(e.keyCode == 39){
+      let right = parseInt(ghost.style.left);
+      right = right + 100;
+      ghost.style.left = right + "px";
+      ghost.style.transform =
+      "rotateY(0deg)" ;
+      }else if(e.keyCode == 40){
+      let t = parseInt(ghost.style.top);
+      t = t + 100;
+      ghost.style.top = t + "px";
+    </script>
+  </body>
+</html>
