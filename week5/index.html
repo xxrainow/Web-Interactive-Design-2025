@@ -99,6 +99,8 @@
 
     <div id="gameArea">
       <h1>Word Typing Game</h1>
+      <h3>글자가 사라지기 전에 입력하세요!</h3>
+
       <canvas id="gameCanvas" width="800" height="400"></canvas>
 
       <div id="gameMessage"></div>
@@ -181,7 +183,7 @@
           let progress = this.life / totalLife;
 
           // progress^2: 시간이 지날수록 가속적으로 사라짐
-          this.opacity = progress ** 2;
+          this.opacity = progress ** 1.5;
 
           if (this.life <= 0) {
             this.opacity = 0;
