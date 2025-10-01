@@ -90,6 +90,11 @@
     </style>
   </head>
   <body>
+    <audio id="bgm" autoplay loop>
+      <source src="bgm.mp3" type="audio/mp3" />
+      브라우저가 오디오 태그를 지원하지 않습니다.
+    </audio>
+
     <div id="leftPanel">
       <div id="scoreBoard">
         <h2>명예의 전당</h2>
@@ -122,6 +127,19 @@
     </div>
 
     <script>
+      const bgm = document.getElementById('bgm');
+
+      // 사용자가 키 입력이나 클릭하면 소리 켜기
+      function enableSound() {
+        bgm.muted = false;
+        bgm.play();
+        document.removeEventListener('click', enableSound);
+        document.removeEventListener('keydown', enableSound);
+      }
+
+      document.addEventListener('click', enableSound);
+      document.addEventListener('keydown', enableSound);
+
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
       const inputBox = document.getElementById('inputBox');
@@ -130,7 +148,7 @@
       const restartBtn = document.getElementById('restartBtn');
       const rankList = document.getElementById('rankList');
 
-      const GAME_DURATION = 10;
+      const GAME_DURATION = 20;
 
       const possibleWords = [
         '개과천선',
