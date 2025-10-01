@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hahmlet&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <style>
+      h1,
+      h2 {
+        font-family: 'Hahmlet', serif;
+      }
+      body {
+        font-family: 'Hahmlet', sans-serif;
+        background: #222;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 20px;
+      }
+
+      #leftPanel,
+      #rightPanel {
+        width: 200px;
+        margin-right: 20px;
+        margin-top: 20px;
+      }
+
+      #scoreBoard {
+        padding: 1px;
+        background: #333;
+        font-size: 18px;
+        padding-left: 30px;
+      }
+
+      #rankList {
+        font-family: 'Hahmlet', serif;
+      }
+
+      #scoreBoard ol {
+        list-style: none;
+        padding: 0;
+      }
+      #scoreBoard li {
+        margin: 5px 0;
+      }
+      #gameArea {
+        text-align: center;
+        flex-grow: 1;
+      }
+      #inputArea {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+      canvas {
+        background: #111;
+        display: block;
+        margin: 20px auto;
+        border: 1px solid #fff;
+      }
+      input {
+        padding: 10px;
+        font-size: 16px;
+        width: 200px;
+      }
+      #score,
+      #timer {
+        font-family: 'Hahmlet', serif;
+        font-size: 20px;
+      }
+      #restartBtn {
+        display: none;
+
+        padding: 10px 15px;
+        font-size: 18px;
+        background: #ffffff;
+        color: #373737;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      #restartBtn:hover {
+        background: #ccd8ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="leftPanel">
+      <div id="scoreBoard">
+        <h2>명예의 전당</h2>
+        <ol id="rankList"></ol>
+      </div>
+    </div>
+
+    <div id="gameArea">
+      <h1>Word Typing Game</h1>
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <div id="gameMessage"></div>
+
+      <div id="inputArea">
+        <input
+          type="text"
+          id="inputBox"
+          placeholder="단어를 입력하세요"
+          autofocus
+        />
+        <button id="restartBtn">다시 시작하기</button>
+      </div>
+    </div>
+
+    <div id="rightPanel">
+      <div id="score">점수: 0</div>
+      <div id="timer">남은 시간: 0초</div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const inputBox = document.getElementById('inputBox');
+      const scoreEl = document.getElementById('score');
+      const timerEl = document.getElementById('timer');
+      const restartBtn = document.getElementById('restartBtn');
+      const rankList = document.getElementById('rankList');
+
+      const GAME_DURATION = 10;
+
+      const possibleWords = [
+        '개과천선',
+        '감언이설',
+        '견물생심',
+        '고장난명',
+        '과유불급',
+        '구사일생',
+        '금상첨화',
+        '기호지세',
+        '남부여대',
+        '단도직입',
+        '동고동락',
+        '백년해로',
+        '부전자전',
+        '사면초가',
+        '설상가상',
+        '수수방관',
+        '아전인수',
+        '안하무인',
+        '약육강식',
+        '오비이락',
+        '우공이산',
+        '유비무환',
+        '일거양득',
+        '천생연분',
+        '천재일우',
+        '청출어람',
+        '타산지석',
+        '풍수지탄',
+        '학수고대',
+        '화룡점정',
+      ];
+
+      let score, words, gameTime, gameOver;
+      let wordInterval, gameTimer;
+
+      class Word {
+        constructor(text, x, y) {
+          this.text = text;
+          this.x = x;
+          this.y = y;
+          this.opacity = 1;
+          this.life = 500;
+        }
+        update() {
+          this.life--;
+
+          const totalLife = 500;
+          let progress = this.life / totalLife;
+
+          // progress^2: 시간이 지날수록 가속적으로 사라짐
+          this.opacity = progress ** 2;
+
+          if (this.life <= 0) {
+            this.opacity = 0;
+          }
+        }
+        draw() {
+          ctx.fillStyle = `rgba(255,255,255,${this.opacity})`;
+          ctx.font = '24px Hahmlet';
+          ctx.fillText(this.text, this.x, this.y);
+        }
+      }
+
+      function spawnWord() {
+        if (gameOver) return;
+        const text =
+          possibleWords[Math.floor(Math.random() * possibleWords.length)];
+        const x = Math.random() * (canvas.width - 100) + 20;
+        const y = Math.random() * (canvas.height - 30) + 30;
+        words.push(new Word(text, x, y));
+      }
+
+      function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (!gameOver) {
+          for (let i = words.length - 1; i >= 0; i--) {
+            const word = words[i];
+            word.update();
+            word.draw();
+            if (word.life <= 0) {
+              words.splice(i, 1);
+            }
+          }
+        } else {
+          ctx.fillStyle = 'red';
+          ctx.font = '30px Hahmlet';
+          ctx.fillText('GAME OVER!', canvas.width / 2 - 100, canvas.height / 2);
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      inputBox.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !gameOver) {
+          const value = inputBox.value.trim();
+          for (let i = words.length - 1; i >= 0; i--) {
+            if (words[i].text === value) {
+              score++;
+              scoreEl.textContent = '점수: ' + score;
+              words.splice(i, 1);
+              break;
+            }
+          }
+          inputBox.value = '';
+        }
+      });
+
+      function startGame() {
+        score = 0;
+        words = [];
+        gameTime = GAME_DURATION;
+        gameOver = false;
+        scoreEl.textContent = '점수: 0';
+        timerEl.textContent = `남은 시간: ${GAME_DURATION}초`;
+        inputBox.disabled = false;
+        inputBox.value = '';
+        restartBtn.style.display = 'none';
+
+        const gameMessage = document.getElementById('gameMessage');
+        gameMessage.innerHTML = '';
+
+        wordInterval = setInterval(spawnWord, 1000);
+
+        gameTimer = setInterval(() => {
+          if (gameTime > 0) {
+            gameTime--;
+            timerEl.textContent = '남은 시간: ' + gameTime + '초';
+          } else {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function endGame() {
+        gameOver = true;
+        clearInterval(wordInterval);
+        clearInterval(gameTimer);
+        inputBox.disabled = true;
+        restartBtn.style.display = 'inline-block';
+
+        const gameMessage = document.getElementById('gameMessage');
+        gameMessage.innerHTML = `<h2>SCORE: ${score}</h2>`;
+
+        saveScore(score);
+        showRanking();
+      }
+
+      function saveScore(newScore) {
+        let scores = JSON.parse(localStorage.getItem('scores')) || [];
+        scores.push(newScore);
+        scores.sort((a, b) => b - a);
+        scores = scores.slice(0, 5);
+        localStorage.setItem('scores', JSON.stringify(scores));
+      }
+
+      function showRanking() {
+        let scores = JSON.parse(localStorage.getItem('scores')) || [];
+        rankList.innerHTML = '';
+        scores.forEach((s, i) => {
+          const li = document.createElement('li');
+          li.textContent = `${i + 1}위: ${s}점`;
+          rankList.appendChild(li);
+        });
+      }
+
+      restartBtn.addEventListener('click', startGame);
+
+      showRanking();
+      startGame();
+      update();
+    </script>
+  </body>
+</html>

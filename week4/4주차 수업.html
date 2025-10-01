@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+  </head>
+  <body>
+    <script>
+      let students = [
+        {
+          num: 1,
+          major: '시각디자인전공',
+          stNum: 23100972,
+          grade: 3,
+          name: '강민지',
+          email: 'mizyy0804@gmail.com',
+          github: 'https://github.com/mizyy0804',
+        },
+        {
+          num: 2,
+          major: '컴퓨터공학과',
+          stNum: 23101158,
+          grade: 3,
+          name: '김대규',
+          email: 'ddk3207@naver.com',
+          github: 'https://github.com/KimDaegyu-Dev',
+        },
+        {
+          num: 3,
+          major: '시각디자인전공',
+          stNum: 22100979,
+          grade: 3,
+          name: '김민정',
+          email: 'dsbklbkmj@gmail.com',
+          github: 'https://github.com/dsbklbkmj-wq',
+        },
+        {
+          num: 4,
+          major: '시각디자인전공',
+          stNum: 23100978,
+          grade: 3,
+          name: '김보경',
+          email: 'kimbogyung040915@gmail.com',
+          github: 'https://github.com/kimbogyung404/BB.gitt',
+        },
+        {
+          num: 5,
+          major: '시각디자인전공',
+          stNum: 21100993,
+          grade: 4,
+          name: '남현정',
+          email: 'jhj0610@g.seoultech.ac.kr',
+          github: 'https://github.com/hjnam2025',
+        },
+        {
+          num: 6,
+          major: '산업디자인전공',
+          stNum: 21100953,
+          grade: 3,
+          name: '서승원',
+          email: 'tjtmddnjs010@gmail.com',
+          github: 'https://github.com/hanadool-cell',
+        },
+        {
+          num: 7,
+          major: '시각디자인전공',
+          stNum: 23100989,
+          grade: 3,
+          name: '석가연',
+          email: 'ga04yeon@gmail.com',
+          github: 'https://github.com/ga04yeon',
+        },
+        {
+          num: 8,
+          major: '시각디자인전공',
+          stNum: 23100992,
+          grade: 3,
+          name: '송지은',
+          email: 'jesong2787@gmail.com',
+          github: 'https://github.com/songjieun2787',
+        },
+        {
+          num: 9,
+          major: '컴퓨터공학과',
+          stNum: 22101186,
+          grade: 4,
+          name: '신지우',
+          email: 'sjw884900@gmail.com',
+          github: 'https://github.com/xxrainow',
+        },
+        {
+          num: 10,
+          major: '시각디자인전공',
+          stNum: 23100996,
+          grade: 3,
+          name: '유가은',
+          email: 'yueun1682@gmail.com',
+          github: 'https://github.com/gaeun-yu',
+        },
+        {
+          num: 11,
+          major: '시각디자인전공',
+          stNum: 23100998,
+          grade: 3,
+          name: '윤설',
+          email: 'overdoseoxx@gmail.con',
+          github: 'https://github.com/overdoseoxx',
+        },
+        {
+          num: 12,
+          major: '건축학전공',
+          stNum: 23100658,
+          grade: 3,
+          name: '이경수',
+          email: 'kyeongsoo030726@gmail.com',
+          github: 'https://github.com/kyeongsoo030726',
+        },
+        {
+          num: 13,
+          major: '시각디자인전공',
+          stNum: 20101029,
+          grade: 4,
+          name: '이승윤',
+          email: 'onechosecond@gmail.com',
+          github: 'https://github.com/onechosecond',
+        },
+        {
+          num: 14,
+          major: '시각디자인전공',
+          stNum: 22101012,
+          grade: 3,
+          name: '이재성',
+          email: 'leejs2421@gmail.com',
+          github: 'https://github.com/null-saranghae',
+        },
+        {
+          num: 15,
+          major: '시각디자인전공',
+          stNum: 22101015,
+          grade: 3,
+          name: '임정원',
+          email: 'ljw10won@gmail.com',
+          github: 'https://github.com/J1-won',
+        },
+        {
+          num: 16,
+          major: '시각디자인전공',
+          stNum: 23101007,
+          grade: 3,
+          name: '정예린',
+          email: 'sky402715@gmail.com',
+          github: 'https://github.com/jeoungyelin',
+        },
+        {
+          num: 17,
+          major: '시각디자인전공',
+          stNum: 24110075,
+          grade: 3,
+          name: '정희련',
+          email: 'hesue0925@naver.com',
+          github: 'https://github.com/jheeryun-stack',
+        },
+        {
+          num: 18,
+          major: '컴퓨터공학과',
+          stNum: 21101231,
+          grade: 3,
+          name: '조유찬',
+          email: 'yuchancho174@gmail.com',
+          github: 'https://github.com/letYuchan/',
+        },
+        {
+          num: 19,
+          major: '시각디자인전공',
+          stNum: 23101011,
+          grade: 3,
+          name: '조은솔',
+          email: 'eunsolljj@gmail.com',
+          github: 'https://github.com/Cho-eunsol',
+        },
+        {
+          num: 20,
+          major: '시각디자인전공',
+          stNum: 21101027,
+          grade: 3,
+          name: '최민석',
+          email: 'mighty2057@gmail.com',
+          github: 'https://github.com/MS-Choi2057',
+        },
+        {
+          num: 21,
+          major: '시각디자인전공',
+          stNum: 20101041,
+          grade: 3,
+          name: '최종민',
+          email: 'jnnmnn00@gmail.com',
+          github: 'https://github.com/choijnnmnn',
+        },
+        {
+          num: 22,
+          major: '시각디자인전공',
+          stNum: 23101018,
+          grade: 3,
+          name: '하스나누딘',
+          email: 'syfqhizzti@gmail.com',
+          github: 'https://github.com/eqaah16',
+        },
+        {
+          num: 23,
+          major: '시각디자인전공',
+          stNum: 23101021,
+          grade: 3,
+          name: '한수현',
+          email: 'mim012272@gmail.com',
+          github: 'https://github.com/suhyuen-han',
+        },
+        {
+          num: 24,
+          major: '시각디자인전공',
+          stNum: 23101022,
+          grade: 3,
+          name: '한준희',
+          email: 'joonhee0306@gmail.com',
+          github: 'https://github.com/hanjoonhee67',
+        },
+        {
+          num: 25,
+          major: '시각디자인전공',
+          stNum: 23101013,
+          grade: 3,
+          name: '최서연',
+          email: 'chsyn275@gmail.com',
+          github: 'https://github.com/oichsyn',
+        },
+        {
+          num: 26,
+          major: '시각디자인전공',
+          stNum: 23101015,
+          grade: 3,
+          name: '최유빈',
+          email: 'yoobinchoi23@gmail.com',
+          github: 'https://github.com/ChloeChoi23',
+        },
+      ];
+
+      for (let i = 0; i < students.length; i++) {
+        document.body.innerHTML += `<div class="card">${students[i].name}은 ${students[i].major} ${students[i].grade}학년으로 학번은 ${students[i].stNum} 이메일주소는 ${students[i].email}이다.</div>`;
+      }
+    </script>
+    <style>
+      .card {
+        width: 200px;
+        height: 300;
+        text-align: center;
+        font-size: 1rem;
+        border-radius: 5px;
+        margin: 5px;
+        box-shadow: 0px 0px 3px #ccc;
+        padding: 20px;
+      }
+      body {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    </style>
+  </body>
+</html>
