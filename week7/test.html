@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>편지 열기 인터랙션</title>
+    <style>
+      /* --- 기본 배경 및 정렬 --- */
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: fff7f9;
+      }
+
+      /* --- 편지 전체를 감싸는 컨테이너 --- */
+      .letter-container {
+        position: relative;
+        width: 600px;
+        height: 400px;
+        cursor: pointer;
+        /* 모바일에서도 부드러운 애니메이션을 위한 설정 */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        transform: translateY(200px); /* 80px 아래로 이동 */
+      }
+
+      /* --- 모든 편지 구성 요소의 공통 스타일 --- */
+      .envelope-front,
+      .envelope-back,
+      .flap,
+      .heart,
+      .letter {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .envelope-back {
+        /* 덮개를 제외한 봉투 뒷면 이미지 */
+        background-image: url('test/backenvelope.png');
+        z-index: 1;
+        top: -100px;
+      }
+
+      /* --- 편지지 --- */
+      .letter {
+        /* 편지지 이미지 (배경이 투명해야 함) */
+        background-image: url('test/lettercut.png');
+        background-size: 90% auto;
+        z-index: 2;
+        /* 초기 상태: 봉투 아래쪽에 완전히 숨겨져 있음 */
+        transform: translateY(-20px);
+        transition-delay: 0s; /* 덮개가 열린 후 편지가 올라오도록 지연 */
+      }
+
+      /* --- 봉투 앞면 --- */
+      .envelope-front {
+        /* 덮개를 제외한 봉투 앞면 이미지 */
+        background-image: url('test/envelope.png');
+        z-index: 4;
+        top: 0;
+      }
+
+      /* --- 덮개 (열리는 부분) --- */
+      .flap {
+        /* 덮개 부분 이미지 */
+        background-image: url('test/heartflap.png');
+        z-index: 6;
+        top: 0;
+        /* 덮개가 위쪽을 기준으로 회전하도록 설정 */
+        transform-origin: top;
+        transform: translateY(-90px);
+        transition-delay: 0s;
+      }
+
+      /* * --- ✨ 애니메이션 실행 부분 ✨ ---
+         * JavaScript로 .open 클래스가 추가되면 아래 스타일이 적용됩니다.
+         */
+
+      .letter-container.open .flap {
+        /* 덮개가 위로 180도 회전하며 열림 */
+        transform: rotateX(180deg);
+        opacity: 0;
+        transition-delay: 0s;
+      }
+
+      .letter-container.open .letter {
+        /* 편지지가 제자리(위)로 올라옴 */
+        transform: translateY(-150px);
+        transition-delay: 0.2s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="letter-container">
+      <div class="envelope-back"></div>
+      <div class="letter"></div>
+
+      <div class="envelope-front"></div>
+
+      <div class="flap"></div>
+      <div class="heart"></div>
+    </div>
+
+    <script>
+      // HTML에서 class가 'letter-container'인 요소를 찾습니다.
+      const letterContainer = document.querySelector('.letter-container');
+
+      letterContainer.addEventListener('click', () => {
+        if (letterContainer.classList.contains('open')) {
+          // 닫히는 경우: 편지 먼저 닫고 덮개 늦게 닫기
+          letterContainer.classList.remove('open'); // 일단 편지 닫기
+          const flap = letterContainer.querySelector('.flap');
+          flap.style.transitionDelay = '0.1s'; // 덮개 늦게 닫히게
+          setTimeout(() => {
+            flap.style.transitionDelay = '0s'; // 다음 열림 대비 원복
+          }, 1500);
+        } else {
+          // 열리는 경우: 덮개 먼저 열기
+          letterContainer.classList.add('open');
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <script>
+  (function(d) {
+    var config = {
+      kitId: 'wxq3dyk',
+      scriptTimeout: 3000,
+      async: true
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Birthday</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+      /* --- 기본 배경 및 정렬 --- */
+      body {
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        background-color: #fff7f9;
+        overflow: hidden;
+        font-family: "timeline-210", sans-serif;
+      }
+
+      section {
+        width: 100vw;
+        height: 100vh;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(to bottom, #ffd2e1, #cfe7ff);
+        transition: opacity 0.8s ease;
+        opacity: 0;
+      }
+
+      section.active {
+        display: flex;
+        flex-direction: column;
+        opacity: 1;
+      }
+
+      section h1 {
+        font-size: 5rem;
+        color: #ff4274;
+        margin-bottom: 30px;
+      }
+
+      button {
+        margin-top: 30px;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 40px;
+        background-color: #ff80a4;
+        color: white;
+        font-family: "timeline-210", sans-serif;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background-color: #ff5b87;
+      }
+
+      /* --- 편지 전체 컨테이너 --- */
+      .letter-container {
+        position: relative;
+        width: 600px;
+        height: 400px;
+        cursor: pointer;
+        /* 모바일에서도 부드러운 애니메이션을 위한 설정 */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        transform: translateY(200px); /* 80px 아래로 이동 */
+      }
+
+      /* --- 공통 이미지 레이어 --- */
+      .envelope-front,
+      .envelope-back,
+      .flap,
+      .letter {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .envelope-back {
+        z-index: 1;
+        top: -100px;
+      }
+
+      .letter {
+        z-index: 2;
+        /* 초기 상태: 봉투 아래쪽에 완전히 숨겨져 있음 */
+        transform: translateY(-20px) scale(1.2);
+        transition-delay: 0s; /* 덮개가 열린 후 편지가 올라오도록 지연 */
+      }
+
+      .envelope-front {
+        z-index: 5;
+        top: 0;
+      }
+
+      /* --- 덮개 (열리는 부분) --- */
+      .flap {
+        z-index: 6;
+        top: 0;
+        /* 덮개가 위쪽을 기준으로 회전하도록 설정 */
+        transform-origin: top;
+        transform: translateY(-90px);
+        transition-delay: 0s;
+      }
+
+      /* 윗부분 가리는 마스크 */
+      .paper-clip {
+        position: absolute;
+        inset: 0; /* 컨테이너와 같은 크기 */
+        /* 앞면(envelope-front: 4)보다 아래, 편지지(2)보다는 위 */
+        z-index: 3;
+        /* 윗부분을 잘라서 봉투 바깥으로 튀어나온 편지지를 숨김 */
+        clip-path: inset(0px 0 80px 0);
+        -webkit-clip-path: inset(0px 0 80px 0);
+        transition: clip-path 0.45s ease, -webkit-clip-path 0.45s ease;
+        pointer-events: none;
+      }
+      .paper-clip .letter,
+      .paper-clip .letter-text {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* --- 날짜 --- */
+      .today {
+        color: #555;
+        position: absolute;
+        bottom: 6%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-weight: 600;
+      }
+
+      /* --- 편지지 위 텍스트 --- */
+      .letter-text2 .next-button {
+        font-size: 0.9rem;   /* 글자 크기만 살짝 축소 */
+        padding: 6px 12px;   /* 버튼 여백 축소 */
+        border-radius: 12px; /* 선택 사항: 모서리 살짝만 둥글게 */
+      }
+      .letter-text,
+      .letter-text2 {
+        opacity: 0;
+        position: absolute;
+        top: 50%; /* 편지지 중앙 기준으로 위치 */
+        left: 50%;
+        transform: translate(-140px, -220px);
+        z-index: 7;
+        text-align: center;
+        color: #222;
+        font-family: "timeline-210", sans-serif;
+        line-height: 1.6;
+        pointer-events: none; /* 클릭 이벤트가 봉투에 가도록 */
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .letter-text h2,
+      .letter-text2 h2 {
+        font-size: 1.8rem;
+        margin: 0;
+      }
+
+      .letter-text p {
+        margin: 0; /* 기본 여백 0 */
+        line-height: 0.9; /* 1 ~ 1.15 사이로 조절해가며 테스트 */
+      }
+
+      .detail-link {
+        display: inline-block;
+        margin-top: 8px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        color: #6a6a6a;
+        font-weight: 500;
+        text-decoration: underline;           
+        pointer-events: auto; /* 링크 클릭 가능 */
+      }
+
+
+      /* --- 상태별 노출 규칙 --- */
+      .letter-container.open .letter-text {
+        opacity: 1;
+        pointer-events: auto;
+        transition-delay: 0.2s; /* 덮개 애니메이션 뒤에 나타나게 하고 싶다면 지연 letter-text에 trainsition이 정의되어야 적용됨 */
+      }
+      .letter-container.detail .letter-text {
+        opacity: 0;
+        pointer-events: none;
+        transition-delay: 0.1s; /* 편지 이동 후 나타나도록 지연 */
+      } /* 자세히 보기 후 기존 텍스트 숨김 */
+      .letter-container.open .flap {
+        /* 덮개가 위로 180도 회전하며 열림 */
+        transform: rotateX(180deg);
+        opacity: 0;
+        transition-delay: 0s;
+        pointer-events: none;
+      }
+      .letter-container.open .letter {
+        /* 편지지가 제자리(위)로 올라옴 */
+        transform: translateY(-50px) scale(1.2);
+        transition-delay: 0.2s;
+      }
+      .letter-container.lift .letter {
+        transform: translateY(-250px) scale(1.2); /* 기존 -150px보다 더 위로 */
+        transition-delay: 0.2s;
+        pointer-events: none;
+      }
+      .letter-container.open .paper-clip,
+      .letter-container.lift .paper-clip {
+        z-index: 4;
+        clip-path: inset(-300px 0 80px 0);
+        -webkit-clip-path: inset(-300px 0 80px 0);
+        transition: clip-path 0.45s ease, -webkit-clip-path 0.45s ease;
+        transition-delay: 0.3s;
+      }
+       .letter-container.lift .letter-text {
+        opacity: 0;
+        pointer-events: none;
+        transition-delay: 0s; /* 편지 이동 후 나타나도록 지연 */
+      }
+      .letter-container.lift .letter-text2 {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-150px, -400px); /* 위로 이동 */
+        transition-delay: 0.2s; /* 편지 이동 후 나타나도록 지연 */
+      } /* 새 텍스트 표시 */
+
+      
+      /* 닫히는 중/애니메이션 중: 즉시 숨김(지연 무시) */
+      .letter-container.closing .letter-text,
+      .letter-container.closing .letter-text2,
+      .letter-container.animating .letter-text,
+      .letter-container.animating .letter-text2 {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: none !important;
+        transition-delay: 0s !important;
+      }
+  
+      
+      .detail-link:hover {
+        text-decoration: underline;
+      }
+
+      /* 폼 & 다음 버튼(간단 크기 축소) */
+      .letter-text2 .next-button {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-radius: 12px;
+        border: none;
+        background: #ff80a4;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .bgm-toggle {
+        position: fixed;
+        right: 20px;
+        top: 0px;
+        z-index: 99;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 999px;
+        background: #222;
+        color: #fff;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .bgm-toggle:hover {
+        filter: brightness(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <button
+        id="bgmToggle"
+        class="bgm-toggle"
+        aria-pressed="false"
+        type="button"
+      >
+        🔇 BGM 켜기
+      </button>
+
+    <!--  배경 음악 -->
+    <audio id="startbgm" preload="auto" loop>
+      <source src="bgm/start.mp3" type="audio/mp3" />
+    </audio>
+
+    <!-- 1️⃣ 인트로 화면 -->
+    <section id="screen1" class="active">
+      <h1>나홀로 생일을 보내는 방법</h1>
+      <button onclick="nextScreen()">시작하기</button>
+    </section>
+
+    <section id="screen2">
+      <div class="letter-container">
+        <img
+          src="test/backenvelope.png"
+          alt="편지 봉투 뒷면"
+          class="envelope-back"
+        />
+        <div class="paper-clip">
+          <img src="test/letter.png" alt="편지지" class="letter" />
+        </div>
+
+        <!-- 📝 편지 위에 얹을 글씨 -->
+        <div class="letter-text">
+          <h2>Happy Birthday To...</h2>
+          <p><br /></p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p><br /></p>
+          <a href="#" class="detail-link">자세히 보기</a>
+        </div>
+
+        <div class="letter-text2">
+          <h2>Happy Birthday!</h2>
+          <p>당신만을 위한 <br> 작은 파티에 초대합니다</p>
+          <p><br /></p>
+          <p>당신의 이름과 나이를 입력해주세요</p>
+          <form id="invite-form" class="invite-form" autocomplete="off">
+            <label class="field">
+            <span class="label">이름</span>
+            <input id="nameInput" type="text" name="name" placeholder="홍길동" required />
+            </label>
+
+            <label class="field">
+            <span class="label">나이</span>
+              <input id="ageInput" type="number" name="age" min="1" max="120" inputmode="numeric" placeholder="24" required />
+            </label>
+
+          <button type="submit" class="next-button">➜</button>
+          
+        </div>
+
+        <img
+          src="test/envelope.png"
+          alt="편지 봉투 앞면"
+          class="envelope-front"
+        />
+        <img src="test/heartflap.png" alt="편지 봉투 덮개" class="flap" />
+      </div>
+      <div id="today" class="today"></div>
+    </section>
+
+    <script>
+      let current = 1; // 현재 화면 번호
+
+      // 화면 전환 함수
+      function nextScreen() {
+        const now = document.getElementById(`screen${current}`);
+        const next = document.getElementById(`screen${current + 1}`);
+
+        if (!next) return; // 다음 화면이 없으면 종료
+        now.classList.remove('active');
+        next.classList.add('active');
+        current++;
+      }
+
+      // 날짜 표기
+      (function () {
+        const t = new Date();
+        const yyyy = t.getFullYear();
+        const mm = String(t.getMonth() + 1).padStart(2, '0');
+        const dd = String(t.getDate()).padStart(2, '0');
+        document.getElementById('today').textContent = `TODAY ${yyyy}-${mm}-${dd}`;
+      })();
+      
+      // BGM 제어
+      const startbgm = document.getElementById('startbgm');
+      // 사용자가 클릭하거나 스크롤 등 이벤트가 발생하면 음악 재생
+      function tryPlayBgm() {
+        startbgm.play().catch(() => {}); // 정책으로 막히면 조용히 무시
+        document.removeEventListener('click', tryPlayBgm);
+      }
+      document.addEventListener('click', tryPlayBgm, { once: true });
+      // BGM ON/OFF
+      const bgmToggle = document.getElementById('bgmToggle');
+      function updateBgmUI() {
+        const playing = !startbgm.paused && !startbgm.ended;
+        bgmToggle.textContent = playing ? '🔊 BGM 끄기' : '🔇 BGM 켜기';
+        bgmToggle.setAttribute('aria-pressed', String(playing));
+      }
+
+      bgmToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // 편지(컨테이너) 클릭 토글과 충돌 방지
+
+        if (startbgm.paused) {
+          // 사용자 상호작용으로 재생 시도
+          startbgm.play().catch(() => {
+            // 재생 실패(브라우저 정책 등) 시 UI만 일치 유지
+          });
+        } else {
+          startbgm.pause();
+        }
+        updateBgmUI();
+      });
+      // 재생/일시정지 이벤트에 따라 라벨 자동 동기화
+      startbgm.addEventListener('play', updateBgmUI);
+      startbgm.addEventListener('pause', updateBgmUI);
+      updateBgmUI();
+
+
+      // HTML에서 class가 'letter-container'인 요소를 찾음
+      const letterContainer = document.querySelector('.letter-container');
+      const flap = letterContainer.querySelector('.flap');
+      const screen2 = document.getElementById('screen2');
+
+      function toggleEnvelope() {
+        letterContainer.classList.add('animating'); // 텍스트 깜빡임 방지
+        if (letterContainer.classList.contains('open')) {
+          letterContainer.classList.remove('open', 'lift', 'detail'); // 일단 편지 닫기
+          flap.style.transitionDelay = '0.1s'; // 덮개 늦게 닫히게
+          setTimeout(() => {
+            flap.style.transitionDelay = '0s'; // 다음 열림 대비 원복
+          }, 1500);
+        } else {
+          // 열리는 경우: 덮개 먼저 열기
+          letterContainer.classList.add('open');
+        }
+      };
+
+      // 봉투(앞/뒤/덮개)에만 클릭 토글
+      document.querySelectorAll('.envelope-front, .envelope-back, .flap')
+        .forEach(el => el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleEnvelope();
+        }));
+
+      // “자세히 보기” → 위로 올리고 두 번째 텍스트 표시
+      const detailLink = document.querySelector('.detail-link');
+      detailLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        letterContainer.classList.add('lift');
+      });
+
+      // 내부 인터랙션은 버블 차단 (닫히지 않도록)
+      const inviteForm = document.getElementById('invite-form');
+      inviteForm.addEventListener('click', (e) => e.stopPropagation());
+
+      // 폼 제출 시 index2.html로 데이터 전송
+      inviteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 1. 입력 값 가져오기
+      const nameInput = document.getElementById('nameInput');
+      const ageInput = document.getElementById('ageInput');
+
+      const name = nameInput.value;
+      const age = ageInput.value;
+
+      // 2. URL 쿼리 파라미터 생성 (예: ?name=홍길동&age=24)
+      const queryString = `?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
+      // 3. 화면 페이드 아웃 시작 
+      // section.active에 정의된 transition: opacity 0.8s ease;를 활용합니다.
+      screen2.style.transition = 'opacity 0.5s ease';
+      screen2.style.opacity = '0'; // 투명하게 만듦 (화면 어두워짐)
+    
+      // 3. 페이지 이동
+      setTimeout(() => {
+        window.location.href = `index2.html${queryString}`;
+        }, 800); // 1초 대기
+      });
+      
+      // 애니메이션 끝나면 animating 해제
+      flap.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'transform') {
+          letterContainer.classList.remove('animating');
+        }
+      });
+    </script>
+  </body>
+</html>
