@@ -669,10 +669,20 @@
       .bgm-toggle:hover {
         filter: brightness(1.1);
       }
+      .today {
+        color: #555;
+        position: absolute;
+        top: 2%;
+        left: 8%;
+        transform: translateX(-50%);
+        font-size: 22px;
+        font-weight: 800;
+      }
     </style>
   </head>
   <body>
     <div id="pageFade" aria-hidden="true"></div>
+    <div id="today" class="today"></div>
 
     <div>
       <div id="hint">성냥을 성냥곽 쪽으로 문질러 보세요 🔥</div>
@@ -854,6 +864,17 @@
       } else {
         window.addEventListener('load', runPageFadeIn); // 일반적인 경우
       }
+
+      // 날짜 표기
+      (function () {
+        const t = new Date();
+        const yyyy = t.getFullYear();
+        const mm = String(t.getMonth() + 1).padStart(2, '0');
+        const dd = String(t.getDate()).padStart(2, '0');
+        document.getElementById(
+          'today'
+        ).textContent = `TODAY ${yyyy}-${mm}-${dd}`;
+      })();
 
       const match = document.getElementById('match-hand');
       const matchbox = document.getElementById('matchbox-hand');
