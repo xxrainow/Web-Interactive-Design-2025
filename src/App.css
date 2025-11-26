@@ -1,38 +1,277 @@
-.App {
+/* 전체 폰트 및 컬러 변수 설정 */
+:root {
+  --bg-color: #e2dccf; /* 전체 배경색 */
+  --text-color: #5a4e3d; /* 짙은 갈색 텍스트 */
+  --card-bg: #eae6d8; /* 카드 배경 */
+  --accent-color: #8c8470; /* 강조 색상 */
+  --btn-color: #6d6350; /* 버튼 색상 */
+}
+
+body {
+  margin: 0;
+  font-family: 'Nanum Myeongjo', serif; /* 명조체 느낌의 폰트 추천 */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  overflow: auto; /* 화면 고정 */
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* 네비게이션 바 */
+.navbar {
+  padding: 20px 40px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-item {
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  padding: 5px 0;
+  display: inline-block;
+}
+
+.nav-links a:hover {
+  color: #3d3426;
+}
+
+.nav-links a.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+  font-weight: 500;
+}
+
+/* 메인 레이아웃 */
+.recent-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding-top: 60px; /* 네비게이션 높이만큼 */
+  position: relative;
+}
+
+/* 상단 타이틀 */
+.page-header {
+  position: absolute;
+  top: 80px;
+  right: 10%;
+  z-index: 2;
+}
+
+.main-title {
+  font-size: 60px;
+  color: #5a4e3d;
+  margin: 0;
+  text-align: right;
+}
+
+/* 배경 도트 탐정 이미지 */
+.background-detective {
+  position: absolute;
+  right: 8%;
+  bottom: 5%;
+  height: 90%;
+  width: 50%;
+  opacity: 0.9;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.background-detective img,
+.background-detective canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.content-wrapper {
+  display: flex;
+  width: 85%;
+  max-width: 1200px;
+  height: 70vh;
+  z-index: 1;
+  gap: 40px;
+}
+
+/* 왼쪽 섹션 (의뢰서) */
+.left-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  margin-right: 100px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-style: italic;
+  color: #8b836e;
+  margin-bottom: 20px;
+}
+
+.request-card {
+  border: 1px solid #b0a895;
+  background-color: rgba(226, 220, 207, 0.3);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 20px;
+}
+
+.card-header {
+  text-align: right;
+  padding: 20px;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.card-body {
+  display: flex;
+  flex: 1;
+}
+
+.text-area {
+  flex: 1;
+  padding: 30px;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.recipient {
+  margin-bottom: 30px;
+}
+
+.image-area {
+  flex: 0 0 auto;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.image-area img {
+  max-width: 200px;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.accept-btn {
+  width: 100%;
+  padding: 20px;
+  background-color: var(--btn-color);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+.accept-btn:hover {
+  background-color: #504838;
+}
+
+/* 오른쪽 섹션 (패널) */
+.right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 80px; /* 타이틀 높이와 맞추기 위함 */
+  margin-left: 100px;
+}
+
+.panel {
+  background-color: #fdfdf9; /* 아주 밝은 아이보리 */
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #dcdcdc;
+}
+
+.guide-panel {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.panel-content h3 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #bdb7a5;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.panel-content p {
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.player-panel {
+  background-color: var(--btn-color);
+  color: #fff;
+  padding: 15px;
+  margin-top: auto; /* 아래로 붙이기 */
+}
+
+.player-info {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.player-controls {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 10px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.player-controls button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
 }
