@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/Web-Interactive-Design-2025/WebFinalProject/static/css/main.8cbe090a.css",
-    "main.js": "/Web-Interactive-Design-2025/WebFinalProject/static/js/main.ac4023a7.js",
-    "static/media/bgm.mp3": "/Web-Interactive-Design-2025/WebFinalProject/static/media/bgm.9f7c21fd733916267303.mp3",
-    "static/media/detective-source2.png": "/Web-Interactive-Design-2025/WebFinalProject/static/media/detective-source2.3aeb14e9e7612c87f63f.png",
-    "static/media/watch.png": "/Web-Interactive-Design-2025/WebFinalProject/static/media/watch.6e2ad729427b0bad0054.png",
-    "index.html": "/Web-Interactive-Design-2025/WebFinalProject/index.html",
-    "main.8cbe090a.css.map": "/Web-Interactive-Design-2025/WebFinalProject/static/css/main.8cbe090a.css.map",
-    "main.ac4023a7.js.map": "/Web-Interactive-Design-2025/WebFinalProject/static/js/main.ac4023a7.js.map"
+    "main.css": "/Web-Interactive-Design-2025/static/css/main.8cbe090a.css",
+    "main.js": "/Web-Interactive-Design-2025/static/js/main.a8724ae9.js",
+    "static/media/bgm.mp3": "/Web-Interactive-Design-2025/static/media/bgm.9f7c21fd733916267303.mp3",
+    "static/media/detective-source2.png": "/Web-Interactive-Design-2025/static/media/detective-source2.3aeb14e9e7612c87f63f.png",
+    "static/media/watch.png": "/Web-Interactive-Design-2025/static/media/watch.6e2ad729427b0bad0054.png",
+    "index.html": "/Web-Interactive-Design-2025/index.html",
+    "main.8cbe090a.css.map": "/Web-Interactive-Design-2025/static/css/main.8cbe090a.css.map",
+    "main.a8724ae9.js.map": "/Web-Interactive-Design-2025/static/js/main.a8724ae9.js.map"
   },
   "entrypoints": [
     "static/css/main.8cbe090a.css",
-    "static/js/main.ac4023a7.js"
+    "static/js/main.a8724ae9.js"
   ]
 }
