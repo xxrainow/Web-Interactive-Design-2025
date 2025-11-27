@@ -2,7 +2,7 @@
   "name": "webfinalproject",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://xxrainow.github.io/Web-Interactive-Design-2025/webfinalproject",
+  "homepage": ".",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -19,8 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy-to-root": "npm run build && rm -rf ../final-web && mv build ../final-web"
   },
   "eslintConfig": {
     "extends": [

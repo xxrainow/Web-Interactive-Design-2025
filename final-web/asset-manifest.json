@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "./static/css/main.8cbe090a.css",
+    "main.js": "./static/js/main.9bb54cde.js",
+    "static/media/bgm.mp3": "./static/media/bgm.9f7c21fd733916267303.mp3",
+    "static/media/detective-source2.png": "./static/media/detective-source2.3aeb14e9e7612c87f63f.png",
+    "static/media/watch.png": "./static/media/watch.6e2ad729427b0bad0054.png",
+    "index.html": "./index.html",
+    "main.8cbe090a.css.map": "./static/css/main.8cbe090a.css.map",
+    "main.9bb54cde.js.map": "./static/js/main.9bb54cde.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8cbe090a.css",
+    "static/js/main.9bb54cde.js"
+  ]
+}
