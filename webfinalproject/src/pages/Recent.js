@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import watchImage from '../assets/img/watch.png';
 import detectiveSource from '../assets/img/detective-source2.png';
 import HalftoneImage from '../components/ui/HalftoneImage';
@@ -7,6 +7,34 @@ import Background from '../components/ui/Background';
 import audioFile from '../assets/audio/bgm.mp3';
 
 const Recent = () => {
+  const [displayedText, setDisplayedText] = useState('');
+  const fullText = `X에게,
+
+나는 평생 시계공이었소.
+늘 정확한 시간만 쫓았지.
+
+하지만 이제 깨달았소.
+진짜 아름다운 건
+'시간이 멈춘 듯한 순간'
+이라는 것을...
+
+그 순간을 포착한 작품을
+찾아주시오.`;
+
+  useEffect(() => {
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index <= fullText.length) {
+        setDisplayedText(fullText.slice(0, index));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 50); // 50ms마다 한 글자씩
+
+    return () => clearInterval(timer);
+  }, [fullText]);
+
   return (
     <div className="recent-page">
       {/* 떠다니는 도트 배경 */}
@@ -34,24 +62,15 @@ const Recent = () => {
 
             <div className="card-body">
               <div className="text-area">
-                <p className="recipient">X에게,</p>
-                <p>
-                  나는 평생 시계공이었소.
-                  <br />늘 정확한 시간만 쫓았지.
-                </p>
-                <p>
-                  하지만 이제 깨달았소.
-                  <br />
-                  진짜 아름다운 건<br />
-                  '시간이 멈춘 듯한 순간'
-                  <br />
-                  이라는 것을...
-                </p>
-                <p>
-                  그 순간을 포착한 작품을
-                  <br />
-                  찾아주시오.
-                </p>
+                <pre
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    margin: 0,
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  {displayedText}
+                </pre>
               </div>
 
               {/* 회중시계 이미지 영역 */}

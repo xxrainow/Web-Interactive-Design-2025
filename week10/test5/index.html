@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <script>
+      (function (d) {
+        var config = {
+            kitId: 'wxq3dyk',
+            scriptTimeout: 3000,
+            async: true,
+          },
+          h = d.documentElement,
+          t = setTimeout(function () {
+            h.className =
+              h.className.replace(/\bwf-loading\b/g, '') + ' wf-inactive';
+          }, config.scriptTimeout),
+          tk = d.createElement('script'),
+          f = false,
+          s = d.getElementsByTagName('script')[0],
+          a;
+        h.className += ' wf-loading';
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+          a = this.readyState;
+          if (f || (a && a != 'complete' && a != 'loaded')) return;
+          f = true;
+          clearTimeout(t);
+          try {
+            Typekit.load(config);
+          } catch (e) {}
+        };
+        s.parentNode.insertBefore(tk, s);
+      })(document);
+    </script>
+    <meta charset="utf-8" />
+    <title>France Art Museum Map</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f7f4ef; /* 따뜻한 갤러리 느낌 배경색 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      /* 지도 컨테이너 스타일 */
+      #map {
+        width: 90vw;
+        height: 80vh;
+        border: 2px solid #000000; /* 금빛 테두리 */
+        border-radius: 10px; /* 부드러운 모서리 */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        transform: translateY(5%);
+      }
+
+      /* 제목 스타일 */
+      h1 {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'timeline-210', sans-serif;
+        font-size: 2rem;
+        color: #3b2f2f;
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+      }
+    </style>
+
+    <!-- ✅ Google Maps JavaScript API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGkJXGl7VGekHhQZLYkCeDywSC_4wO1rk&callback=initMap"
+      async
+      defer
+    ></script>
+
+    <script>
+      function initMap() {
+        const franceCenter = { lat: 48.8566, lng: 2.3522 }; // 파리 중심 좌표
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+          center: franceCenter,
+          zoom: 13,
+          mapTypeId: 'roadmap',
+        });
+
+        // 🎨 주요 미술관 데이터 배열
+        const museums = [
+          {
+            name: 'Musée du Louvre',
+            position: { lat: 48.8606, lng: 2.3376 },
+            description:
+              '세계에서 가장 큰 미술관으로, 모나리자와 밀로의 비너스로 유명합니다.',
+          },
+          {
+            name: "Musée d'Orsay",
+            position: { lat: 48.86, lng: 2.3266 },
+            description:
+              '인상주의와 후기인상주의 작품의 보고. 모네, 고흐, 르누아르 등이 전시되어 있습니다.',
+          },
+          {
+            name: 'Centre Pompidou',
+            position: { lat: 48.8606, lng: 2.3522 },
+            description:
+              '현대미술 중심지. 피카소, 마티스, 칸딘스키 작품이 전시된 혁신적 건축물.',
+          },
+          {
+            name: "Musée de l'Orangerie",
+            position: { lat: 48.8638, lng: 2.3226 },
+            description: "모네의 대작 '수련' 시리즈가 상설 전시된 곳.",
+          },
+          {
+            name: 'Musée Rodin',
+            position: { lat: 48.8556, lng: 2.315 },
+            description:
+              '조각가 오귀스트 로댕의 작품과 정원이 아름다운 미술관.',
+          },
+        ];
+
+        // 📍 각 미술관에 마커 및 팝업 생성
+        museums.forEach((museum) => {
+          const marker = new google.maps.Marker({
+            position: museum.position,
+            map: map,
+            title: museum.name,
+          });
+
+          const info = new google.maps.InfoWindow({
+            content: `<h3>${museum.name}</h3><p>${museum.description}</p>`,
+          });
+
+          marker.addListener('click', () => {
+            info.open(map, marker);
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id-="title">
+      <h1>프랑스 주요 미술관 지도</h1>
+    </div>
+    <div id="map"></div>
+  </body>
+</html>

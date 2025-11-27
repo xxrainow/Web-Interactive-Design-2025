@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>D3 Canvas Quick Test</title>
+<style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    background: #0b0f19;
+    color: #fff;
+  }
+  #wrap {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  #labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font: 12px/1.2 Inter, system-ui;
+    color: #cfe9ff;
+  }
+  .label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    text-shadow: 0 0 6px #000a;
+  }
+  #hint {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #ffffff10;
+    border: 1px solid #ffffff22;
+    padding: 6px 8px;
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    font: 12px/1.2 Inter, system-ui;
+  }
+</style>
+
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="labels"></div>
+  <div id="hint">Wheel: Zoom · Drag: Pan</div>
+</div>
+
+<!-- UMD 빌드: 모듈 실패 위험 없이 동작 -->
+<script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script>
+  // ---- 1) 캔버스 DPI/사이즈 세팅 (이거 안 하면 "아무것도 안 보이는" 경우 많아요)
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+
+  function resize() {
+    const w = (canvas.clientWidth = window.innerWidth);
+    const h = (canvas.clientHeight = window.innerHeight);
+    canvas.width = w * DPR;
+    canvas.height = h * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); // 고해상도 보정
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---- 2) 테스트용 데이터 (무작위 40노드 + 60링크)
+  const N = 40;
+  const nodes = d3
+    .range(N)
+    .map((i) => ({ id: i, r: 3 + Math.random() * 4, score: Math.random() }));
+  const links = d3.range(60).map(() => ({
+    source: Math.floor(Math.random() * N),
+    target: Math.floor(Math.random() * N),
+  }));
+
+  // ---- 3) 줌/패닝
+  let transform = d3.zoomIdentity;
+  d3.select(canvas).call(
+    d3
+      .zoom()
+      .scaleExtent([0.2, 4])
+      .on('zoom', (ev) => {
+        transform = ev.transform;
+        draw();
+      })
+  );
+
+  // ---- 4) 드래그(노드 잡아끌기)
+  d3.select(canvas).call(
+    d3
+      .drag()
+      .subject(dragsubject)
+      .on('start', dragstarted)
+      .on('drag', dragged)
+      .on('end', dragended)
+  );
+
+  function dragsubject(event) {
+    const [mx, my] = transform.invert([event.x, event.y]);
+    let picked = null,
+      minD = 14;
+    for (const n of nodes) {
+      const d = Math.hypot(mx - (n.x || 0), my - (n.y || 0));
+      if (d < n.r + 6 && d < minD) {
+        minD = d;
+        picked = n;
+      }
+    }
+    return picked;
+  }
+  function dragstarted(ev) {
+    if (!ev.active) sim.alphaTarget(0.3).restart();
+    ev.subject.fx = ev.subject.x;
+    ev.subject.fy = ev.subject.y;
+  }
+  function dragged(ev) {
+    ev.subject.fx = transform.invertX(ev.x);
+    ev.subject.fy = transform.invertY(ev.y);
+  }
+  function dragended(ev) {
+    if (!ev.active) sim.alphaTarget(0);
+    ev.subject.fx = null;
+    ev.subject.fy = null;
+  }
+
+  // ---- 5) 포스 시뮬레이션
+  const sim = d3
+    .forceSimulation(nodes)
+    .force(
+      'link',
+      d3
+        .forceLink(links)
+        .distance((d) => 40 + (1 - (nodes[d.source.index]?.score || 0)) * 50)
+        .strength(0.12)
+    )
+    .force('charge', d3.forceManyBody().strength(-45))
+    .force(
+      'center',
+      d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2)
+    )
+    .alphaDecay(0.08)
+    .on('tick', draw);
+
+  // ---- 6) 상위 라벨 몇 개만 DOM으로
+  const labelsLayer = document.getElementById('labels');
+  const topLabels = nodes
+    .slice()
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map((n) => {
+      const el = document.createElement('div');
+      el.className = 'label';
+      el.textContent = `node ${n.id}`;
+      labelsLayer.appendChild(el);
+      return { n, el };
+    });
+
+  // ---- 7) 캔버스 렌더
+  function draw() {
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    ctx.translate(transform.x, transform.y);
+    ctx.scale(transform.k, transform.k);
+
+    // 링크
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    for (const l of links) {
+      ctx.moveTo(l.source.x, l.source.y);
+      ctx.lineTo(l.target.x, l.target.y);
+    }
+    ctx.strokeStyle = '#7dd3fc55';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // 노드
+    ctx.globalAlpha = 1;
+    for (const n of nodes) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(125,211,252,0.9)';
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // 라벨(줌 인일 때만 보이게)
+    for (const { n, el } of topLabels) {
+      const x = transform.applyX(n.x || 0),
+        y = transform.applyY((n.y || 0) - (n.r + 8));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.opacity = transform.k > 0.7 ? 1 : 0;
+    }
+  }
+
+  // 첫 프레임 강제 호출 (혹시 tick 전에 비어 보이는 경우 대비)
+  draw();
+</script>

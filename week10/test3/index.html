@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>검색 은하 — D3 Force Graph (Vanilla)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0f1c;
+        --fg: #e6f2ff;
+        --muted: #9dbad8;
+        --neon: #22d3ee;
+        --link: #7dd3fc;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: Inter, system-ui;
+      }
+      #app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
+        padding: 8px 10px;
+        backdrop-filter: blur(8px);
+        z-index: 10;
+      }
+      header input {
+        width: 300px;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--fg);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 6px 4px;
+      }
+      header button {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: var(--fg);
+        padding: 6px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      header button.primary {
+        background: var(--neon);
+        color: #031519;
+        border-color: var(--neon);
+      }
+
+      #graph {
+        flex: 1;
+      }
+
+      /* hover시 뜨는 툴팁 */
+      .tooltip {
+        position: absolute;
+        pointer-events: none;
+        z-index: 20;
+        background: rgba(10, 14, 24, 0.92);
+        color: #c4f826;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 6px 8px;
+        font-size: 12px;
+        transform: translate(-50%, -160%);
+        opacity: 0;
+        transition: opacity 0.12s;
+      }
+      /* 노드라벨 */
+      .label {
+        fill: #6af36c;
+        font-size: 11px;
+        paint-order: stroke;
+        stroke: #0a0f1c;
+        stroke-width: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <input id="seed" placeholder="중심 단어를 입력하세요 (예: 고양이)" />
+        <button id="start" class="primary">중심 시작</button>
+        <button id="clear">초기화</button>
+      </header>
+      <div id="graph"></div>
+      <div id="tip" class="tooltip"></div>
+    </div>
+
+    <!-- D3 v7을 CDN으로 -->
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+    <script>
+      (() => {
+        // ====== 기본 파라미터 설정 config ======
+        const cfg = {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          maxNodes: 200,
+          childCount: [4, 6], // 확장 시 자식 수 범위 (min,max)
+          linkBase: 70,
+          linkStep: 65, // 깊이에 따른 링크 거리
+          charge: -220, // 서로 밀어내는 힘
+          collision: 14, // 노드끼리 겹침 방지
+        };
+
+        // ====== SVG/그룹/줌 ======
+        const wrap = d3
+          .select('#graph') // 1) DOM에서 <div id="graph">를 선택
+          .append('svg') // 2) 그 안에 <svg> 요소를 하나 새로 만들어 붙인 다음
+          .attr('width', cfg.width) // 3) svg의 width 속성(픽셀)을 cfg.width 값으로 설정하고
+          .attr('height', cfg.height) // 4) height 속성도 cfg.height 값으로 설정
+          .style('background', 'var(--bg)'); // 5) inline 스타일로 배경색을 CSS 변수(--bg)로 지정
+
+        const zoomLayer = wrap.append('g'); // 패닝/줌 대상
+        const linkG = zoomLayer.append('g').attr('class', 'links');
+        const nodeG = zoomLayer.append('g').attr('class', 'nodes');
+        const labelG = zoomLayer.append('g').attr('class', 'labels');
+
+        const zoom = d3
+          .zoom()
+          .scaleExtent([0.2, 4])
+          .on('zoom', (ev) => {
+            zoomLayer.attr('transform', ev.transform);
+          });
+
+        wrap.call(zoom);
+
+        const tip = d3.select('#tip');
+
+        // ====== 데이터 상태 ======
+        let nodes = []; // {id,label,depth,expanded}
+        let links = []; // {source,target,weight}
+
+        // 빠른 조회용 맵
+        const nodeIndex = new Map(); // id -> node
+        const expandedSet = new Set(); // 확장된 노드 id 기록
+
+        // ====== 시뮬레이션 ======
+        const sim = d3
+          .forceSimulation(nodes)
+          .force(
+            'link',
+            d3
+              .forceLink(links)
+              .id((d) => d.id)
+              .distance(
+                (l) => cfg.linkBase + (l.target.depth || 1) * cfg.linkStep // 깊이별 거리
+              )
+              .strength(0.9)
+          )
+          .force('charge', d3.forceManyBody().strength(cfg.charge)) // 서로 밀어냄
+          .force('collide', d3.forceCollide(cfg.collision)) // 겹침 방지
+          .force('center', d3.forceCenter(cfg.width / 2, cfg.height / 2))
+          .on('tick', ticked); // 좌표 갱신 시 렌더링
+
+        // ====== 헬퍼 ======
+        // 있으면 재사용, 없으면 생성
+        function upsertNode(id, depth = 0) {
+          if (nodeIndex.has(id)) return nodeIndex.get(id);
+          const n = { id, label: id, depth, expanded: false };
+          nodeIndex.set(id, n);
+          nodes.push(n);
+          return n;
+        }
+
+        // 중복 링크 방지하고 추가
+        function addLink(a, b, weight = 0.7) {
+          if (
+            links.find(
+              (l) =>
+                (l.source.id || l.source) === a.id &&
+                (l.target.id || l.target) === b.id
+            )
+          )
+            return;
+          links.push({ source: a, target: b, weight });
+        }
+
+        function randomInRange([min, max]) {
+          return Math.floor(min + Math.random() * (max - min + 1));
+        }
+
+        async function fetchRelatedWords(seed, depth, count) {
+          const url = `https://ko.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+            seed
+          )}&limit=${count}&namespace=0&origin=*`;
+          const r = await fetch(url);
+          const j = await r.json();
+          const titles = j?.[1] || [];
+          return titles.length ? titles : [seed + '-관련']; // 최소 1개 보장
+        }
+
+        // ====== 노드 클릭 시 확장 로직 ======
+        async function expandNode(node) {
+          // 이미 확장되었거나 최대 노드 수 도달 시 무시
+          if (!node || node.expanded) return;
+          if (nodes.length >= cfg.maxNodes) return;
+
+          node.expanded = true;
+
+          // 확장된 노드로 표시
+          expandedSet.add(node.id);
+
+          // 몇 개의 자식 노드를 추가할지 랜덤으로 결정
+          const count = Math.min(
+            randomInRange(cfg.childCount),
+            cfg.maxNodes - nodes.length
+          );
+
+          // 연관 단어 리스트 가져옴
+          const related = await fetchRelatedWords(
+            node.id,
+            node.depth + 1,
+            count
+          );
+
+          related.forEach((w, idx) => {
+            // 자식 노드 생성, 깊이 = 부모 +1
+            const child = upsertNode(w, node.depth + 1);
+            // 초기 좌표를 부모 근처로 씨드 (부드러운 전개)
+            child.x = (node.x ?? cfg.width / 2) + Math.cos(idx) * 20;
+            child.y = (node.y ?? cfg.height / 2) + Math.sin(idx) * 20;
+            addLink(node, child, 0.6 + Math.random() * 0.3);
+          });
+
+          // DOM에 새 line/circle/text가 붙고, 다시 렌더링
+          restart();
+
+          // 카메라를 천천히 선택 노드로 이동
+          smoothCenterOn(node, 600);
+        }
+
+        // ====== 부드럽게 특정 노드로 카메라 이동 ======
+        function smoothCenterOn(node, ms = 600) {
+          const t = d3.zoomTransform(wrap.node());
+          const k = t.k;
+          const tx = cfg.width / 2 - (node.x || 0) * k;
+          const ty = cfg.height / 2 - (node.y || 0) * k;
+          wrap
+            .transition()
+            .duration(ms)
+            .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
+        }
+
+        // ====== 렌더 ======
+        function restart() {
+          // JOIN: links
+          const linkSel = linkG
+            .selectAll('line')
+            .data(
+              links,
+              (d) => `${d.source.id || d.source}-${d.target.id || d.target}`
+            );
+          linkSel.exit().remove();
+
+          // 새로 추가된 데이터 Line Enter 처리
+          const linkEnt = linkSel
+            .enter()
+            .append('line')
+            .attr('stroke', 'rgba(125,211,252,0.28)')
+            .attr('stroke-width', (d) => 0.6 + d.weight * 2)
+            .attr('stroke-linecap', 'round');
+          linkSel.merge(linkEnt);
+
+          // JOIN: nodes
+          const nodeSel = nodeG.selectAll('g.node').data(nodes, (d) => d.id);
+          nodeSel.exit().remove();
+
+          // 새로 추가된 데이터 Node Enter 처리 후 g 만들고 이벤트/드래그 설정
+          const nodeEnt = nodeSel
+            .enter()
+            .append('g')
+            .attr('class', 'node')
+            .style('cursor', 'pointer')
+            .on('click', (ev, d) => expandNode(d))
+            .on('mouseover', handleHover(true))
+            .on('mouseout', handleHover(false))
+            .call(
+              d3
+                .drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended)
+            );
+          nodeEnt
+            .append('circle')
+            .attr('r', 6)
+            .attr('fill', colorForDepth)
+            .attr('stroke', (d) =>
+              d.depth === 0 ? 'var(--neon)' : 'rgba(255,255,255,.25)'
+            )
+            .attr('stroke-width', (d) => (d.depth === 0 ? 2 : 1))
+            .attr('filter', null);
+
+          const mergedNodes = nodeSel.merge(nodeEnt);
+
+          // JOIN: labels
+          const labelSel = labelG
+            .selectAll('text.label')
+            .data(nodes, (d) => d.id);
+          labelSel.exit().remove();
+          const labelEnt = labelSel
+            .enter()
+            .append('text')
+            .attr('class', 'label')
+            .attr('text-anchor', 'middle')
+            .text((d) =>
+              d.label.length > 24 ? d.label.slice(0, 24) + '…' : d.label
+            );
+          labelSel.merge(labelEnt);
+
+          sim.nodes(nodes);
+          sim.force('link').links(links);
+          sim.alpha(0.9).restart();
+        }
+
+        function colorForDepth(d) {
+          if (d.depth === 0) return 'rgba(34,211,238,0.95)'; // center
+          if (d.depth === 1) return 'rgba(125,211,252,0.95)'; // ring 1
+          return 'rgba(125,211,252,0.75)'; // deeper
+        }
+
+        function handleHover(isOn) {
+          return (ev, d) => {
+            const tipEl = document.getElementById('tip');
+            if (isOn) {
+              // 링크 강조
+              linkG
+                .selectAll('line')
+                .attr('stroke', (l) =>
+                  l.source === d || l.target === d
+                    ? 'rgba(255,255,255,0.9)'
+                    : 'rgba(125,211,252,0.22)'
+                )
+                .attr('stroke-width', (l) =>
+                  l.source === d || l.target === d ? 2.2 : 0.6 + l.weight * 2
+                );
+              // 툴팁
+              const pt = d3
+                .zoomTransform(wrap.node())
+                .apply([d.x || 0, d.y || 0]);
+              tip
+                .style('left', `${pt[0]}px`)
+                .style('top', `${pt[1]}px`)
+                .style('opacity', '1')
+                .text(d.label);
+            } else {
+              linkG
+                .selectAll('line')
+                .attr('stroke', 'rgba(125,211,252,0.28)')
+                .attr('stroke-width', (l) => 0.6 + l.weight * 2);
+              tip.style('opacity', '0');
+            }
+          };
+        }
+
+        function ticked() {
+          linkG
+            .selectAll('line')
+            .attr('x1', (d) => d.source.x)
+            .attr('y1', (d) => d.source.y)
+            .attr('x2', (d) => d.target.x)
+            .attr('y2', (d) => d.target.y);
+
+          nodeG
+            .selectAll('g.node')
+            .attr('transform', (d) => `translate(${d.x},${d.y})`);
+
+          labelG
+            .selectAll('text.label')
+            .attr('x', (d) => d.x)
+            .attr('y', (d) => (d.y || 0) + 12);
+        }
+
+        function dragstarted(event, d) {
+          if (!event.active) sim.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        }
+        function dragged(event, d) {
+          d.fx = event.x;
+          d.fy = event.y;
+        }
+        function dragended(event, d) {
+          if (!event.active) sim.alphaTarget(0);
+          // 고정 유지하려면 주석 해제
+          // d.fx = null; d.fy = null;
+        }
+
+        // ====== 시작/초기화 ======
+        function reset() {
+          nodes = [];
+          links = [];
+          nodeIndex.clear();
+          expandedSet.clear();
+          sim.nodes(nodes);
+          sim.force('link').links(links);
+          linkG.selectAll('*').remove();
+          nodeG.selectAll('*').remove();
+          labelG.selectAll('*').remove();
+        }
+
+        // ====== 특정 단어로 시작
+        async function startFromSeed(seed) {
+          reset();
+          const center = upsertNode(seed, 0);
+          // 중앙 배치
+          center.x = cfg.width / 2;
+          center.y = cfg.height / 2;
+          restart();
+          await expandNode(center); // 1차 확장
+          // 화면 맞춤
+          wrap.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+        }
+
+        // UI 이벤트
+        document.getElementById('start').addEventListener('click', () => {
+          const seed = (
+            document.getElementById('seed').value || '검색어'
+          ).trim();
+          startFromSeed(seed);
+        });
+        document.getElementById('clear').addEventListener('click', () => {
+          reset();
+          restart();
+        });
+
+        // 첫 화면: 데모 키워드 자동
+        startFromSeed('지우-은하');
+
+        // 창 크기 대응
+        window.addEventListener('resize', () => {
+          cfg.width = window.innerWidth;
+          cfg.height = window.innerHeight;
+          wrap.attr('width', cfg.width).attr('height', cfg.height);
+          sim
+            .force('center', d3.forceCenter(cfg.width / 2, cfg.height / 2))
+            .alpha(0.3)
+            .restart();
+        });
+      })();
+    </script>
+  </body>
+</html>

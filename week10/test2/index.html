@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>Force Graph — Vanilla</title>
+<head>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: #0a0f1c;
+      color: #fff;
+      font-family: Inter, system-ui;
+    }
+    #topbar {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+      background: #ffffff0f;
+      border: 1px solid #ffffff26;
+      border-radius: 12px;
+      padding: 8px;
+      backdrop-filter: blur(8px);
+    }
+    #graph {
+      width: 100vw;
+      height: 100vh;
+    }
+    button,
+    input {
+      color: #fff;
+      background: transparent;
+      border: 1px solid #ffffff33;
+      border-radius: 10px;
+      padding: 6px 10px;
+    }
+    .active {
+      background: #22d3ee;
+      color: #031519;
+      border-color: #22d3ee;
+    }
+  </style>
+</head>
+<body>
+  <div id="topbar">
+    <button id="btn-trend" class="active">Trending</button>
+    <button id="btn-search">Search</button>
+    <input
+      id="q"
+      placeholder="키워드… 예: 고양이, 로봇, 드라마"
+      style="
+        width: 320px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #ffffff33;
+        padding: 6px 4px;
+      "
+    />
+    <button id="btn-go">Search</button>
+  </div>
+  <div id="graph"></div>
+
+  <script src="https://unpkg.com/force-graph@1.43.5/dist/force-graph.min.js"></script>
+  <script>
+    // 1) 컨테이너와 그래프 인스턴스
+    const el = document.getElementById('graph');
+    const FG = ForceGraph()(el)
+      .backgroundColor('#0A0F1C')
+      .nodeId('id')
+      .linkSource('source')
+      .linkTarget('target')
+      .nodeVal((n) => (n.isCenter ? 12 : 3))
+      .nodeColor((n) => (n.isCenter ? '#22d3ee' : '#7dd3fc'))
+      .linkColor(() => 'rgba(125,211,252,0.25)')
+      .linkWidth((l) => 0.5 + (l.weight || 0) * 2)
+      .cooldownTicks(50)
+      .d3VelocityDecay(0.33);
+
+    // 2) 리사이즈 반영(중요)
+    function resize() {
+      FG.width(window.innerWidth).height(window.innerHeight);
+    }
+    window.addEventListener('resize', () => {
+      resize();
+      FG.zoomToFit(400, 60);
+    });
+    resize();
+
+  // 3) 데이터 세팅
+  const nodes = [
+    { id: 'Hello', isCenter: true },
+    { id: 'World' },
+    { id: 'Jiwoo' },
+    { id: '4' },
+    { id: '5' },
+  ].map(n => ({ ...n }));
+
+  const links = [
+    { source: 'Hello', target: 'World', weight: 0.8 },
+    { source: 'Hello', target: 'Jiwoo', weight: 0.8 },
+    { source: 'World', target: '4',    weight: 0.8 },
+    { source: 'Jiwoo', target: '5',    weight: 0.8 },
+  ].map(l => ({ ...l }));
+
+  // 깊이 맵 + 링크 거리 (깊이에 따라 멀어지게)
+  const depth = { 'Hello':0, 'World':1, 'Jiwoo':1, '4':2, '5':2 };
+  FG.linkDistance(l => {
+    const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+    const d = depth[String(tgt)] ?? 1;
+    return 70 + d * 60;
+  });
+
+  // ---- 인터랙션/스타일 상태 (graphData 전에 등록)
+  let hovered = null;
+  let selected = null;
+  const hiNodes = new Set();
+  const hiLinks = new Set();
+  let zoomK = 1;
+
+  function setHighlight(node){
+    hiNodes.clear(); hiLinks.clear();
+    if (!node) return;
+    hiNodes.add(node);
+    FG.graphData().links.forEach(l => {
+      const s = typeof l.source === 'object' ? l.source : null;
+      const t = typeof l.target === 'object' ? l.target : null;
+      if (s === node || t === node) { hiNodes.add(s); hiNodes.add(t); hiLinks.add(l); }
+    });
+  }
+
+  // 툴팁
+  const tip = document.createElement('div');
+  Object.assign(tip.style, {
+    position:'absolute', pointerEvents:'none', zIndex:20,
+    padding:'6px 8px', borderRadius:'10px',
+    background:'rgba(10,14,24,0.85)', color:'#cfe9ff',
+    border:'1px solid rgba(255,255,255,0.15)', font:'12px/1.2 Inter,system-ui',
+    transform:'translate(-50%,-140%)', opacity:'0', transition:'opacity .12s'
+  });
+  document.body.appendChild(tip);
+  const showTip = n => {
+    const {x,y} = FG.graph2ScreenCoords(n.x, n.y);
+    tip.textContent = n.label || n.id;
+    tip.style.left = `${x}px`; tip.style.top = `${y}px`; tip.style.opacity = '1';
+  };
+  const hideTip = () => tip.style.opacity = '0';
+
+  // 줌 LOD
+  FG.onZoom(({k}) => { zoomK = k; });
+
+  // 이벤트
+  FG.onNodeHover(n => {
+    hovered = n;
+    setHighlight(n);
+    FG.linkWidth(FG.linkWidth());   // 재렌더 트리거
+    FG.nodeColor(FG.nodeColor());
+    n ? showTip(n) : hideTip();
+  });
+  FG.onNodeClick(n => {
+    selected = (selected === n) ? null : n;
+    setHighlight(selected || hovered);
+    if (selected) FG.centerAt(selected.x, selected.y, 400);
+  });
+  FG.onNodeDragEnd(n => { n.fx = n.x; n.fy = n.y; });
+  FG.onNodeRightClick(n => { n.fx = null; n.fy = null; });
+
+  // 링크/입자 스타일 (강조 반영)
+  const baseLinkColor = 'rgba(125,211,252,0.25)';
+  FG.linkColor(l => hiLinks.has(l) ? 'rgba(255,255,255,0.85)' : baseLinkColor);
+  FG.linkWidth(l => hiLinks.has(l) ? 2.5 : (0.5 + (l.weight||0)*2));
+  FG.linkDirectionalParticles(l => hiLinks.has(l) ? 2 : 0);
+  FG.linkDirectionalParticleWidth(2.5);
+  FG.linkDirectionalParticleSpeed(0.004);
+
+  // 🔴 커스텀 드로잉을 기본 렌더 **대체**
+  FG.nodeCanvasObjectMode(() => 'replace');
+  const baseNodeVal = FG.nodeVal();
+  FG.nodeCanvasObject((node, ctx, scale) => {
+    const r = baseNodeVal(node);
+    const isHi = hiNodes.has(node);
+    const isSel = node === selected;
+    const isHover = node === hovered;
+
+    // 글로우
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, r + (isHi ? 3 : 1), 0, Math.PI*2);
+    ctx.shadowBlur = isHi ? 20 : 8;
+    ctx.shadowColor = isHi ? '#7dd3fc' : '#4b5563';
+    ctx.strokeStyle = isHi ? 'rgba(125,211,252,0.9)' : 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = isHi ? 1.6 : 0.8;
+    ctx.stroke();
+    ctx.restore();
+
+    // 본체
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, r, 0, Math.PI*2);
+    ctx.fillStyle = node.isCenter
+      ? 'rgba(34,211,238,0.95)'
+      : (isHi ? 'rgba(125,211,252,0.95)' : 'rgba(125,211,252,0.8)');
+    ctx.fill();
+
+    // 선택 파형
+    if (isSel){
+      const t = performance.now() * 0.004;
+      const pulse = 4 + 2 * Math.sin(t);
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, r + 6 + pulse, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(34,211,238,0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+
+    // 라벨 (줌인일 때만)
+    if (zoomK > 0.9){
+      const label = node.label || node.id;
+      ctx.font = `${12 / Math.pow(scale, 0.2)}px Inter, system-ui`;
+      ctx.fillStyle = isHover ? '#fff' : 'rgba(255,255,255,0.95)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(label, node.x, node.y + r + 2);
+    }
+  });
+
+  // 엔진 stop 후 맞춤 등록 → 데이터 넣기 전에 플래그 ON
+  let fitPending = false;
+  FG.onEngineStop(() => {
+    if (fitPending) { FG.zoomToFit(400, 60); fitPending = false; }
+  });
+
+  // 데이터 적용
+  fitPending = true;
+  FG.graphData({ nodes, links });
+
+  // 안전망 맞춤
+  setTimeout(() => FG.zoomToFit(400,60), 300);
+
+  // 부드러운 애니메이션을 위한 리렌더 루프
+  (function rerender(){
+    FG.nodeColor(FG.nodeColor());
+    requestAnimationFrame(rerender);
+  })();

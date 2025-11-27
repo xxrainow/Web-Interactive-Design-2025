@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>검색 은하 2.0 — D3 × Naver DataLab</title>
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        height: 100%;
+        background: #0a0f1c;
+        color: #e6f2ff;
+        font-family: Inter, system-ui;
+      }
+      #container {
+        display: flex;
+        height: 100vh;
+      }
+      #graph {
+        flex: 1;
+        position: relative;
+      }
+      #trend {
+        width: 40%;
+        background: #111827;
+        padding: 20px;
+      }
+      header {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
+        padding: 8px 10px;
+        backdrop-filter: blur(8px);
+        z-index: 10;
+      }
+      header input {
+        width: 250px;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #e6f2ff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 6px 4px;
+      }
+      header button {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: #e6f2ff;
+        padding: 6px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      header button.primary {
+        background: #22d3ee;
+        color: #031519;
+        border-color: #22d3ee;
+      }
+      .label {
+        fill: #fff;
+        font-size: 11px;
+        paint-order: stroke;
+        stroke: #0a0f1c;
+        stroke-width: 3px;
+      }
+      svg {
+        font: 10px sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <input id="seed" placeholder="중심 단어 입력 (예: 고양이)" />
+      <button id="start" class="primary">시작</button>
+      <button id="clear">초기화</button>
+    </header>
+
+    <div id="container">
+      <div id="graph"></div>
+      <div id="trend">
+        <h3 id="trendTitle">📈 트렌드</h3>
+        <svg id="trendChart" width="100%" height="300"></svg>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const cfg = {
+          width: window.innerWidth * 0.6,
+          height: window.innerHeight,
+          clientId: '0w1KHz0jYGzBPEjR7v1R',
+          clientSecret: 'ipXHTffrDG',
+        };
+
+        // --- 왼쪽 Force Graph 구성 ---
+        const wrap = d3
+          .select('#graph')
+          .append('svg')
+          .attr('width', cfg.width)
+          .attr('height', cfg.height)
+          .style('background', '#0a0f1c');
+        const zoomLayer = wrap.append('g');
+        const linkG = zoomLayer.append('g'),
+          nodeG = zoomLayer.append('g'),
+          labelG = zoomLayer.append('g');
+        const zoom = d3
+          .zoom()
+          .scaleExtent([0.2, 4])
+          .on('zoom', (ev) => zoomLayer.attr('transform', ev.transform));
+        wrap.call(zoom);
+
+        let nodes = [],
+          links = [];
+        const nodeIndex = new Map();
+        const sim = d3
+          .forceSimulation(nodes)
+          .force(
+            'link',
+            d3
+              .forceLink(links)
+              .id((d) => d.id)
+              .distance(90)
+          )
+          .force('charge', d3.forceManyBody().strength(-220))
+          .force('center', d3.forceCenter(cfg.width / 2, cfg.height / 2))
+          .on('tick', ticked);
+
+        function upsertNode(id, depth = 0) {
+          if (nodeIndex.has(id)) return nodeIndex.get(id);
+          const n = { id, label: id, depth, expanded: false };
+          nodeIndex.set(id, n);
+          nodes.push(n);
+          return n;
+        }
+        function addLink(a, b) {
+          links.push({ source: a, target: b });
+        }
+
+        async function fetchTrend(keyword) {
+          const url = 'https://openapi.naver.com/v1/datalab/search';
+          const body = {
+            startDate: '2024-01-01',
+            endDate: '2024-12-31',
+            timeUnit: 'month',
+            keywordGroups: [{ groupName: keyword, keywords: [keyword] }],
+          };
+          const r = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Naver-Client-Id': cfg.clientId,
+              'X-Naver-Client-Secret': cfg.clientSecret,
+            },
+            body: JSON.stringify(body),
+          });
+          const j = await r.json();
+          return j.results[0]?.data || [];
+        }
+
+        async function expandNode(node) {
+          if (node.expanded) return;
+          node.expanded = true;
+          const related = Array.from(
+            { length: 5 },
+            (_, i) => node.id + '-연관' + (i + 1)
+          );
+          related.forEach((w, i) => {
+            const c = upsertNode(w, node.depth + 1);
+            c.x = node.x + Math.cos(i) * 40;
+            c.y = node.y + Math.sin(i) * 40;
+            addLink(node, c);
+          });
+          restart();
+        }
+
+        function restart() {
+          const linkSel = linkG.selectAll('line').data(links);
+          linkSel
+            .enter()
+            .append('line')
+            .attr('stroke', 'rgba(125,211,252,0.28)')
+            .attr('stroke-width', 1.5);
+          const nodeSel = nodeG.selectAll('circle').data(nodes);
+          nodeSel
+            .enter()
+            .append('circle')
+            .attr('r', (d) => (d.depth === 0 ? 10 : 6))
+            .attr('fill', (d) => (d.depth === 0 ? '#22d3ee' : '#7dd3fc'))
+            .attr('stroke', '#0a0f1c')
+            .attr('stroke-width', 1)
+            .on('click', async (ev, d) => {
+              expandNode(d);
+              const data = await fetchTrend(d.id);
+              drawTrendChart(d.id, data);
+            });
+          const labelSel = labelG.selectAll('text').data(nodes);
+          labelSel
+            .enter()
+            .append('text')
+            .attr('class', 'label')
+            .attr('text-anchor', 'middle')
+            .text((d) => d.label);
+          sim.nodes(nodes);
+          sim.force('link').links(links);
+          sim.alpha(1).restart();
+        }
+
+        function ticked() {
+          linkG
+            .selectAll('line')
+            .attr('x1', (d) => d.source.x)
+            .attr('y1', (d) => d.source.y)
+            .attr('x2', (d) => d.target.x)
+            .attr('y2', (d) => d.target.y);
+          nodeG
+            .selectAll('circle')
+            .attr('cx', (d) => d.x)
+            .attr('cy', (d) => d.y);
+          labelG
+            .selectAll('text')
+            .attr('x', (d) => d.x)
+            .attr('y', (d) => d.y + 14);
+        }
+
+        // --- 오른쪽 트렌드 차트 ---
+        function drawTrendChart(keyword, data) {
+          const svg = d3.select('#trendChart');
+          svg.selectAll('*').remove();
+          d3.select('#trendTitle').text('📈 ' + keyword + ' 검색 추이');
+          if (!data.length)
+            return svg
+              .append('text')
+              .attr('x', 20)
+              .attr('y', 50)
+              .attr('fill', '#9dbad8')
+              .text('데이터 없음');
+          const margin = { top: 20, right: 20, bottom: 30, left: 40 },
+            w = svg.node().clientWidth - margin.left - margin.right,
+            h = 300 - margin.top - margin.bottom;
+          const g = svg
+            .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+          const parse = d3.timeParse('%Y-%m-%d');
+          const x = d3
+            .scaleTime()
+            .domain(d3.extent(data, (d) => parse(d.period)))
+            .range([0, w]);
+          const y = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, (d) => d.ratio)])
+            .nice()
+            .range([h, 0]);
+          const line = d3
+            .line()
+            .x((d) => x(parse(d.period)))
+            .y((d) => y(d.ratio));
+          g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#22d3ee')
+            .attr('stroke-width', 2)
+            .attr('d', line);
+          g.append('g')
+            .attr('transform', `translate(0,${h})`)
+            .call(d3.axisBottom(x).ticks(5));
+          g.append('g').call(d3.axisLeft(y));
+        }
+
+        async function startFromSeed(seed) {
+          nodes = [];
+          links = [];
+          nodeIndex.clear();
+          const c = upsertNode(seed, 0);
+          restart();
+          const d = await fetchTrend(seed);
+          drawTrendChart(seed, d);
+        }
+
+        document.getElementById('start').addEventListener('click', () => {
+          const s = (document.getElementById('seed').value || 'AI').trim();
+          startFromSeed(s);
+        });
+        document.getElementById('clear').addEventListener('click', () => {
+          nodes = [];
+          links = [];
+          nodeIndex.clear();
+          restart();
+          d3.select('#trendChart').selectAll('*').remove();
+        });
+
+        startFromSeed('AI');
+      })();
+    </script>
+  </body>
+</html>
