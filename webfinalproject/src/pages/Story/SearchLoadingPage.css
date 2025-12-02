@@ -1,0 +1,36 @@
+/* src/pages/Story/SearchLoadingPage.css */
+
+.search-loading-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* 배경 이미지는 RequestBG나 IntroBG 중 분위기에 맞는 걸 쓰세요 */
+  background-image: url('../../assets/images/RequestBG.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* 배경을 흐릿하고 어둡게 눌러주는 오버레이 */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px); /* ★ 핵심: 배경 흐림 효과 */
+  z-index: 0;
+}
+
+.loading-text {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.2rem;
+  font-weight: 300; /* 얇은 글씨 */
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  letter-spacing: 1px;
+}

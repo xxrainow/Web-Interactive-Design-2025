@@ -1,0 +1,121 @@
+/* src/pages/Story/Clues/CluePage.css */
+
+.clue-page-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* 배경 이미지 (기존 RequestBG 사용하거나 어두운 배경) */
+  background-image: url('../../assets/images/RequestBG.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.clue-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* 배경을 더 어둡게 눌러줌 */
+  z-index: 0;
+}
+
+/* 상단 안내 문구 */
+.clue-header {
+  z-index: 10;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 300;
+  font-size: 1.4rem;
+}
+
+/* 카드들이 모여있는 공간 */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 500px; /* 카드 회전 반경 확보 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  perspective: 1000px; /* 3D 입체감 */
+}
+
+/* 하단 버튼 */
+.find-art-button {
+  margin-top: 2rem;
+  padding: 12px 50px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50px;
+  color: white;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s;
+}
+
+.find-art-button:hover {
+  background: white;
+  color: black;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 상단 네비게이션 바 */
+.clue-navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 3rem; /* RequestPage와 동일한 여백 */
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: center;
+  z-index: 100; /* 오버레이보다 위에 있어야 함 */
+  box-sizing: border-box;
+}
+
+/* 아이콘 버튼 스타일 */
+.clue-navbar .icon-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.clue-navbar .icon-btn:hover {
+  transform: scale(1.1);
+}
+
+/* ★ 하단 안내 문구 스타일 */
+.clue-info-text {
+  margin-bottom: 2rem; /* 버튼과의 간격 */
+  color: rgba(255, 255, 255, 0.5); /* 반투명한 흰색으로 은은하게 */
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.85rem; /* 작게 설정 */
+  font-weight: 300;
+  z-index: 10; /* 배경보다 위에 */
+  cursor: default;
+}

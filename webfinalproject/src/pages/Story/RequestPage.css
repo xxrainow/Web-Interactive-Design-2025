@@ -1,0 +1,141 @@
+/* src/pages/Story/RequestPage.css */
+
+/* 폰트 불러오기 (필기체 + 명조체) */
+@import url('https://fonts.googleapis.com/css2?family=Parisienne&family=Noto+Serif+KR:wght@300;500&display=swap');
+
+/* 전체 배경 컨테이너 */
+.request-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* 배경 이미지 설정 (경로 확인 필수!) */
+  background-image: url('../../assets/images/RequestBG.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* 스크롤 방지 */
+}
+
+/* 상단 네비게이션 바 */
+.request-navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+/* 아이콘 버튼 스타일 */
+.request-navbar .icon-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.request-navbar .icon-btn:hover {
+  transform: scale(1.1);
+}
+
+/* 중앙 흰색 카드 */
+.request-card {
+  background-color: rgba(255, 255, 255, 0.95); /* 약간 투명한 흰색 */
+  padding: 4rem 3rem;
+  width: 100%;
+  max-width: 450px; /* 카드의 최대 너비 */
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+  position: relative; /* 장식 선 위치 기준 */
+  color: #333; /* 기본 글자색 */
+}
+
+/* 상하단 장식 선 공통 스타일 */
+.deco-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%; /* 선 길이 */
+  height: 1px;
+  background-color: #333; /* 선 색상 */
+}
+.deco-line.top {
+  top: 2.5rem;
+}
+.deco-line.bottom {
+  bottom: 2.5rem;
+}
+
+/* 타이틀 'Request' */
+.card-title {
+  font-family: 'Parisienne', cursive; /* 우아한 필기체 */
+  font-size: 4rem;
+  font-weight: normal;
+  margin: 0 0 0.5rem 0;
+}
+
+/* 번호 '001' */
+.card-number {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-bottom: 3rem;
+  color: #666;
+}
+
+/* 받는 사람, 보내는 사람 */
+.to-whom,
+.from-whom {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.to-whom {
+  margin-bottom: 2.5rem;
+}
+.from-whom {
+  margin-top: 3rem;
+}
+
+/* 본문 내용 */
+.card-content {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1rem;
+  line-height: 2; /* 줄 간격 넓게 */
+  font-weight: 300;
+  word-break: keep-all; /* 단어 단위 줄바꿈 */
+}
+.card-content p {
+  margin: 0.5rem 0;
+}
+
+/* 강조 텍스트 (파랑, 밤) */
+.highlight {
+  font-weight: 500;
+  color: #000; /* 강조색 */
+}
+
+/* 우측 하단 버튼 */
+.next-button {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  background: none;
+  border: none;
+  color: white;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  padding: 10px;
+}
+
+.next-button:hover {
+  opacity: 0.7;
+}
