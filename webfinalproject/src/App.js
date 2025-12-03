@@ -12,7 +12,7 @@ import MuseumFlow from './pages/Museum/MuseumFlow';
 import { museumData } from './data/museumData';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('intro'); // 초기 페이지를 'loading'으로 설정
+  const [currentPage, setCurrentPage] = useState('map'); // 초기 페이지를 'loading'으로 설정
   const [selectedMuseum, setSelectedMuseum] = useState(museumData['null']);
 
   // 1. [추가] 마지막으로 본 미술관 ID를 기억하는 state (기본값: 'louvre')
@@ -70,6 +70,12 @@ function App() {
   const handleBackToMap = () => {
     setCurrentPage('map');
     setSelectedMuseum(null);
+  };
+
+  // 4. 지도에서 '최종 결정하러 가기' 버튼 클릭 시 실행될 함수
+  const handleFinalDecision = () => {
+    console.log('최종 결정 페이지(단서 페이지)로 이동합니다.');
+    setCurrentPage('final');
   };
 
   return (
@@ -154,6 +160,7 @@ function App() {
               onMuseumSelect={handleMuseumClick}
               onBack={handleBackToClue}
               initialId={lastViewedId}
+              onFinalDecision={handleFinalDecision}
             />
           </motion.div>
         )}

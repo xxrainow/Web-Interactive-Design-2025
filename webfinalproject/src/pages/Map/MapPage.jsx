@@ -96,7 +96,7 @@ const Scene = ({ currentIndex }) => {
 // --------------------------------------------------------
 // 메인 페이지 컴포넌트
 // --------------------------------------------------------
-const MapPage = ({ onMuseumSelect, onBack, initialId }) => {
+const MapPage = ({ onMuseumSelect, onBack, initialId, onFinalDecision }) => {
   // 2. [수정] 초기 인덱스 계산 함수
   const getInitialIndex = () => {
     if (!initialId) return 0; // 없으면 0번(루브르)
@@ -131,16 +131,22 @@ const MapPage = ({ onMuseumSelect, onBack, initialId }) => {
 
   return (
     <div className="map-container">
+      {/* 1. 상단 네비게이션 - 뒤로가기 버튼만 남김 */}
       <div className="map-navbar">
-        <div
-          className="icon-btn"
-          onClick={(e) => {
-            e.stopPropagation(); // 배경 클릭 이벤트 전파 방지
-            onBack();
-          }}
-        >
-          <ArrowLeft color="white" size={24} />
+        <div className="left-controls">
+          {' '}
+          {/* left-controls만 사용 */}
+          <div
+            className="icon-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onBack();
+            }}
+          >
+            <ArrowLeft color="white" size={24} />
+          </div>
         </div>
+        {/* right-controls는 제거하고, 하단 버튼을 별도로 만듭니다. */}
       </div>
 
       {/* [수정] 1. 배경용 3D 캔버스 (흐린 셰이더 효과) */}
@@ -180,6 +186,13 @@ const MapPage = ({ onMuseumSelect, onBack, initialId }) => {
           >
             입장하려면 사진을 클릭하세요
           </p>
+        </div>
+
+        {/* ★★★ [추가] 하단 중앙 최종 결정 버튼 ★★★ */}
+        <div className="bottom-center-controls">
+          <button className="final-decision-btn" onClick={onFinalDecision}>
+            최종 결정하러 가기
+          </button>
         </div>
       </div>
     </div>

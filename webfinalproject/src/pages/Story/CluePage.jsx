@@ -92,7 +92,7 @@ const CluePage = ({ onNext, onBack }) => {
 
       {/* 텍스트 안내 */}
       <div className="clue-header fade-in">
-        <p>단서 카드를 확인해서 편지에 적힌 작품을 찾아주세요</p>
+        <p>단서 카드를 확인해서 단서 5개를 모두 만족하는 작품을 찾아주세요</p>
         <p className="clue-info-text fade-in">
           * 나중에도 단서를 확인할 수 있어요
         </p>

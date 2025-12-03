@@ -177,9 +177,26 @@
   pointer-events: none;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 30px 0;
-  margin-bottom: 30px;
+  /* justify-content: space-between; */
+  padding: 0;
+}
+
+/* UP 화살표 */
+.nav-arrow.up {
+  position: absolute; /* 절대 위치 */
+  top: 0px; /* 상단에서 띄우기 */
+  left: 50%;
+  transform: translateY(+10%);
+  pointer-events: auto;
+}
+
+/* ★ [핵심 수정] DOWN 화살표 */
+.nav-arrow.down {
+  position: absolute; /* 절대 위치 */
+  bottom: 0px; /* ★ 하단에서 80px 만큼 확실하게 띄웁니다! */
+  left: 50%;
+  transform: translateY(-10%);
+  pointer-events: auto;
 }
 .nav-arrow {
   pointer-events: auto;
@@ -189,7 +206,7 @@
   opacity: 0.5;
   cursor: pointer;
   transition: all 0.3s;
-  padding: 15px;
+  padding: 10px;
 }
 .nav-arrow:hover {
   opacity: 1;

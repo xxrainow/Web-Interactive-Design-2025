@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.6efe89a8.css",
-    "main.js": "./static/js/main.8ad038e2.js",
+    "main.css": "./static/css/main.44b5ae48.css",
+    "main.js": "./static/js/main.70a6ed1a.js",
     "static/media/raft_of_the_medusa.png": "./static/media/raft_of_the_medusa.b0dab8574a21e0a59d46.png",
     "static/media/astronomer.png": "./static/media/astronomer.6c286903fc853028f00d.png",
     "static/media/blue_ii.png": "./static/media/blue_ii.d3968d84db4c4ab35072.png",
@@ -36,11 +36,11 @@
     "static/media/RequestBG.jpg": "./static/media/RequestBG.174583c2a3c543b154fe.jpg",
     "static/media/blue_monochrome_ikb_3.png": "./static/media/blue_monochrome_ikb_3.3ff4a0444326ef24d7c3.png",
     "index.html": "./index.html",
-    "main.6efe89a8.css.map": "./static/css/main.6efe89a8.css.map",
-    "main.8ad038e2.js.map": "./static/js/main.8ad038e2.js.map"
+    "main.44b5ae48.css.map": "./static/css/main.44b5ae48.css.map",
+    "main.70a6ed1a.js.map": "./static/js/main.70a6ed1a.js.map"
   },
   "entrypoints": [
-    "static/css/main.6efe89a8.css",
-    "static/js/main.8ad038e2.js"
+    "static/css/main.44b5ae48.css",
+    "static/js/main.70a6ed1a.js"
   ]
 }
