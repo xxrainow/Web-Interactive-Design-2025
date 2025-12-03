@@ -12,7 +12,7 @@ import MuseumFlow from './pages/Museum/MuseumFlow';
 import { museumData } from './data/museumData';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('map'); // 초기 페이지를 'loading'으로 설정
+  const [currentPage, setCurrentPage] = useState('intro'); // 초기 페이지를 'loading'으로 설정
   const [selectedMuseum, setSelectedMuseum] = useState(museumData['null']);
 
   // 1. [추가] 마지막으로 본 미술관 ID를 기억하는 state (기본값: 'louvre')
