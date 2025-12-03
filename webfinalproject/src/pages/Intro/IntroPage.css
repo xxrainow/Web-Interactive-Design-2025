@@ -163,7 +163,7 @@
 .story-text-box {
   font-family: 'Noto Serif KR', serif;
   font-size: 1.4rem;
-  line-height: 2;
+  line-height: 1;
   font-weight: 300;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
   animation: fadeIn 1s ease-out;

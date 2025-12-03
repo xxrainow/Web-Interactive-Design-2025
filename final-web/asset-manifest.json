@@ -1,9 +1,10 @@
 {
   "files": {
-    "main.css": "./static/css/main.ec6e25fc.css",
-    "main.js": "./static/js/main.47727aa2.js",
+    "main.css": "./static/css/main.6efe89a8.css",
+    "main.js": "./static/js/main.6631a89f.js",
     "static/media/raft_of_the_medusa.png": "./static/media/raft_of_the_medusa.b0dab8574a21e0a59d46.png",
     "static/media/astronomer.png": "./static/media/astronomer.6c286903fc853028f00d.png",
+    "static/media/blue_ii.png": "./static/media/blue_ii.d3968d84db4c4ab35072.png",
     "static/media/IntroBGM.mp3": "./static/media/IntroBGM.c8e4b339143644bc8fb2.mp3",
     "static/media/pompidou_in.jpg": "./static/media/pompidou_in.8be1538f4f58806b2a9b.jpg",
     "static/media/louvre_in.jpg": "./static/media/louvre_in.ba96a6d56f86651e8dd7.jpg",
@@ -16,19 +17,30 @@
     "static/media/IntroBG.png": "./static/media/IntroBG.303c44ae0905f6d23bcd.png",
     "static/media/pompidou_out.jpg": "./static/media/pompidou_out.9d7a55fda87e50dd5016.jpg",
     "static/media/MuseumBG.jpg": "./static/media/MuseumBG.616cbe1174c50afd1d25.jpg",
+    "static/media/portrait_of_chanel.png": "./static/media/portrait_of_chanel.9c82709259d8b166e420.png",
     "static/media/orsay_out.jpg": "./static/media/orsay_out.ec933c9f852dbae4747c.jpg",
+    "static/media/yellow_red_blue.png": "./static/media/yellow_red_blue.aa6fd6433a121a8230c4.png",
     "static/media/louvre_out.jpg": "./static/media/louvre_out.a547d04a70ae80dcd4e1.jpg",
+    "static/media/saint_tropez_harbor.png": "./static/media/saint_tropez_harbor.ab1d737d6f8a2a8f5fd8.png",
     "static/media/coronation_of_napoleon.png": "./static/media/coronation_of_napoleon.9c8d93a5df777b416d3a.png",
+    "static/media/saint_lazare_station.png": "./static/media/saint_lazare_station.9a31984d1d39e97a49ae.png",
+    "static/media/eiffel_tower.png": "./static/media/eiffel_tower.af1fc42623cf84e57f97.png",
+    "static/media/water_lilies_clouds.png": "./static/media/water_lilies_clouds.f884328afae9de7b7bdb.png",
+    "static/media/stormy_sea.png": "./static/media/stormy_sea.3dada7bfcff0c0b87ea5.png",
     "static/media/diamond_ace_cheater.png": "./static/media/diamond_ace_cheater.6670d4d13503bb254e34.png",
+    "static/media/wedding.png": "./static/media/wedding.eb99c2f84fce9677c773.png",
+    "static/media/starry_night_over_the_rhone.png": "./static/media/starry_night_over_the_rhone.77645c19ddd4480c4d67.png",
     "static/media/orangerie_in.jpg": "./static/media/orangerie_in.f8a831012c4e88220a97.jpg",
+    "static/media/moulin_de_la_galette.png": "./static/media/moulin_de_la_galette.03d714a4c495c6f9e43c.png",
     "static/media/orangerie_out.jpg": "./static/media/orangerie_out.03a4062b1b3a7e75c73e.jpg",
     "static/media/RequestBG.jpg": "./static/media/RequestBG.174583c2a3c543b154fe.jpg",
+    "static/media/blue_monochrome_ikb_3.png": "./static/media/blue_monochrome_ikb_3.3ff4a0444326ef24d7c3.png",
     "index.html": "./index.html",
-    "main.ec6e25fc.css.map": "./static/css/main.ec6e25fc.css.map",
-    "main.47727aa2.js.map": "./static/js/main.47727aa2.js.map"
+    "main.6efe89a8.css.map": "./static/css/main.6efe89a8.css.map",
+    "main.6631a89f.js.map": "./static/js/main.6631a89f.js.map"
   },
   "entrypoints": [
-    "static/css/main.ec6e25fc.css",
-    "static/js/main.47727aa2.js"
+    "static/css/main.6efe89a8.css",
+    "static/js/main.6631a89f.js"
   ]
 }

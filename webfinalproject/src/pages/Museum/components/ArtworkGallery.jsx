@@ -6,6 +6,7 @@ import throttle from 'lodash/throttle';
 import './ArtworkGallery.css';
 
 import FlipCardModal from './FlipCardModal';
+import AllCluesModal from './AllCluesModal';
 
 const ArtworkGallery = ({ artworks, onExit, onClue }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -13,6 +14,9 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
 
   // 모달 열림 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 단서 모달 상태 추가
+  const [isClueModalOpen, setIsClueModalOpen] = useState(false);
 
   const currentArt = artworks[currentIndex];
   const isFirst = currentIndex === 0;
@@ -49,6 +53,11 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
   // 모달 닫기 함수
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  // 단서 모달 열기 함수
+  const handleOpenClue = () => {
+    setIsClueModalOpen(true);
   };
 
   const contentVariants = {
@@ -102,7 +111,7 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
 
       {/* 우측 상단 단서 버튼 */}
       <div className="top-right-controls">
-        <button className="clue-btn" onClick={onClue}>
+        <button className="clue-btn" onClick={handleOpenClue}>
           단서
         </button>
       </div>
@@ -179,6 +188,13 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
             artwork={currentArt} // 현재 작품 정보 넘기기
             onClose={handleCloseModal} // 닫기 함수 넘기기
           />
+        )}
+      </AnimatePresence>
+
+      {/* ★ 2. '단서' 버튼 클릭 시 나오는 전체 단서 모달 */}
+      <AnimatePresence>
+        {isClueModalOpen && (
+          <AllCluesModal onClose={() => setIsClueModalOpen(false)} />
         )}
       </AnimatePresence>
     </div>

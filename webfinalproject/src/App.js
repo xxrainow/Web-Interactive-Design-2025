@@ -12,7 +12,13 @@ import MuseumFlow from './pages/Museum/MuseumFlow';
 import { museumData } from './data/museumData';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('intro');
+  const [currentPage, setCurrentPage] = useState('map'); // 초기 페이지를 'loading'으로 설정
+  const [selectedMuseum, setSelectedMuseum] = useState(museumData['null']);
+
+  // 1. [추가] 마지막으로 본 미술관 ID를 기억하는 state (기본값: 'louvre')
+  const [lastViewedId, setLastViewedId] = useState('louvre');
+
+  // 2. 지도에서 핀을 클릭했을 때 실행될 함수
 
   const handleIntroComplete = () => {
     console.log('인트로 끝! 의뢰서 페이지로 이동합니다.');
@@ -49,14 +55,11 @@ function App() {
   //---------------------------------------------------------  지도 미술관 데이터 선택 부분  ---------------------------------------------------------
   //
 
-  // 1. 선택된 미술관 데이터를 저장할 공간
-  const [selectedMuseum, setSelectedMuseum] = useState(null);
-
-  // 2. 지도에서 핀을 클릭했을 때 실행될 함수
   const handleMuseumClick = (museumId) => {
     const museumInfo = museumData[museumId]; // 데이터 파일에서 정보 찾기
     if (museumInfo) {
       setSelectedMuseum(museumInfo); // 찾은 정보 저장
+      setLastViewedId(museumId); // ★ 여기서 ID 기억!
       setCurrentPage('detail'); // 페이지 전환
     } else {
       console.error('미술관 데이터를 찾을 수 없습니다:', museumId);
@@ -150,6 +153,7 @@ function App() {
             <MapPage
               onMuseumSelect={handleMuseumClick}
               onBack={handleBackToClue}
+              initialId={lastViewedId}
             />
           </motion.div>
         )}

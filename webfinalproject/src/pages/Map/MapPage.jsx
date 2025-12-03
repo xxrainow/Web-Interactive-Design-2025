@@ -96,8 +96,17 @@ const Scene = ({ currentIndex }) => {
 // --------------------------------------------------------
 // 메인 페이지 컴포넌트
 // --------------------------------------------------------
-const MapPage = ({ onMuseumSelect, onBack }) => {
-  const [currentIdx, setCurrentIdx] = useState(0);
+const MapPage = ({ onMuseumSelect, onBack, initialId }) => {
+  // 2. [수정] 초기 인덱스 계산 함수
+  const getInitialIndex = () => {
+    if (!initialId) return 0; // 없으면 0번(루브르)
+    // museums 배열에서 dataKey가 initialId('orsay')인 것의 순서를 찾음
+    const foundIndex = museums.findIndex((m) => m.dataKey === initialId);
+    return foundIndex !== -1 ? foundIndex : 0;
+  };
+
+  // 3. [수정] useState 초기값에 계산 함수 넣기
+  const [currentIdx, setCurrentIdx] = useState(getInitialIndex);
 
   const prevIdx = (currentIdx - 1 + museums.length) % museums.length;
   const nextIdx = (currentIdx + 1) % museums.length;
@@ -133,7 +142,7 @@ const MapPage = ({ onMuseumSelect, onBack }) => {
           <ArrowLeft color="white" size={24} />
         </div>
       </div>
-      
+
       {/* [수정] 1. 배경용 3D 캔버스 (흐린 셰이더 효과) */}
       <div className="bg-canvas-wrapper">
         {/* 중앙과 동일한 Scene을 사용해 같은 효과 적용 */}

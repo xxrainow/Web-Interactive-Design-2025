@@ -61,5 +61,6 @@
   font-family: 'Noto Serif KR', serif;
   font-size: 1rem;
   margin-bottom: 1rem;
+  line-height: 2;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }

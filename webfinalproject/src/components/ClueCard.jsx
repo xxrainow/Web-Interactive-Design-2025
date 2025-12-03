@@ -2,14 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './ClueCard.css';
 
-const ClueCard = ({ 
-  data,       // 데이터 객체 (frontImg, title, description 등 포함)
-  isActive,   // 현재 이 카드가 중앙에 있는지?
-  isFlipped,  // 뒤집혔는지?
-  onClick     // 클릭 이벤트
+const ClueCard = ({
+  data, // 데이터 객체 (frontImg, title, description 등 포함)
+  isActive, // 현재 이 카드가 중앙에 있는지?
+  isFlipped, // 뒤집혔는지?
+  onClick, // 클릭 이벤트
+  className, // 외부에서 스타일을 덮어쓸 수 있도록 클래스 받기
 }) => {
   return (
-    <div className="clue-card-container" onClick={onClick}>
+    <div className={`clue-card-container ${className || ''}`} onClick={onClick}>
       <motion.div
         className="clue-card-inner"
         // ★ 핵심: 부모가 시키는 대로(isActive && isFlipped) 회전함
@@ -30,6 +31,7 @@ const ClueCard = ({
             <div className="clue-divider"></div>
             <p className="clue-desc-main">{data.description}</p>
             <p className="clue-desc-sub">{data.subDesc}</p>
+            {data.subDesc && <p className="clue-desc-sub">{data.subDesc}</p>}
           </div>
         </div>
       </motion.div>
