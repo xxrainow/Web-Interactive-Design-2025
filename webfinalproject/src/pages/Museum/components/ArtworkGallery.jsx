@@ -5,9 +5,14 @@ import { X } from 'lucide-react';
 import throttle from 'lodash/throttle';
 import './ArtworkGallery.css';
 
+import FlipCardModal from './FlipCardModal';
+
 const ArtworkGallery = ({ artworks, onExit, onClue }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  // 모달 열림 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const currentArt = artworks[currentIndex];
   const isFirst = currentIndex === 0;
@@ -35,6 +40,16 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
     window.addEventListener('wheel', handleWheel);
     return () => window.removeEventListener('wheel', handleWheel);
   }, [paginate]);
+
+  // 모달 열기 함수
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const contentVariants = {
     enter: (dir) => ({ y: dir > 0 ? '20%' : '-20%', opacity: 0 }),
@@ -69,8 +84,6 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
 
       {/* 배경을 어둡게 눌러주는 막 */}
       <div className="gallery-overlay" />
-
-      {/* --- 레이아웃 (이전 요청사항 유지) --- */}
 
       {/* 왼쪽 라인 + 굵은 선 + 인덱스 */}
       <div className="guide-line left">
@@ -113,7 +126,13 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
               </p>
             </div>
             <div className="image-section">
-              <img src={currentArt.image} alt={currentArt.title} />
+              <img
+                src={currentArt.image}
+                alt={currentArt.title}
+                onClick={handleOpenModal}
+                // 마우스 올렸을 때 클릭 가능하다는 표시
+                style={{ cursor: 'pointer' }}
+              />
             </div>
           </motion.div>
         </AnimatePresence>
@@ -152,6 +171,16 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
           </svg>
         </button>
       </div>
+
+      {/* ★★★ [핵심] 분리된 모달 컴포넌트 사용 ★★★ */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <FlipCardModal
+            artwork={currentArt} // 현재 작품 정보 넘기기
+            onClose={handleCloseModal} // 닫기 함수 넘기기
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

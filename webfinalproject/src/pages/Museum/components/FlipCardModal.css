@@ -1,0 +1,127 @@
+/* src/pages/Museum/components/FlipCardModal.css */
+
+/* 모달 배경 */
+.card-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3D 공간 설정 */
+.flip-card-container {
+  width: 800px;
+  height: 500px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+/* 카드 객체 */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* 앞/뒤 공통 */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* 앞면 (이미지) */
+.flip-card-front {
+  background-color: transparent;
+}
+.flip-card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 뒷면 (텍스트) */
+.flip-card-back {
+  background-color: #0c0c0c;
+  color: white;
+  transform: rotateY(180deg);
+  padding: 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-content {
+  text-align: left;
+  line-height: 1.8;
+  max-width: 90%;
+}
+.description-text {
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin-bottom: 40px;
+  white-space: pre-wrap;
+}
+.selection-prompt {
+  text-align: center;
+  font-size: 1.2rem;
+  opacity: 0.7;
+  margin-top: 20px;
+}
+
+/* 닫기 버튼 */
+.modal-close-btn {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.modal-close-btn:hover {
+  background: white;
+  color: black;
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  .flip-card-container {
+    width: 85vw;
+    height: 60vh;
+  }
+  .description-text {
+    font-size: 0.95rem;
+  }
+  .modal-close-btn {
+    top: 20px;
+    right: 20px;
+  }
+}
