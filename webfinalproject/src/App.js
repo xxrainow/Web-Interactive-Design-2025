@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { AnimatePresence, motion } from 'framer-motion'; // 1. framer-motion 불러오기
+import { AnimatePresence, motion } from 'framer-motion';
 
 // 페이지들 불러오기
 import IntroPage from './pages/Intro/IntroPage';
@@ -8,6 +8,8 @@ import RequestPage from './pages/Story/RequestPage';
 import CluePage from './pages/Story/CluePage';
 import SearchLoadingPage from './pages/Story/SearchLoadingPage';
 import MapPage from './pages/Map/MapPage';
+import MuseumFlow from './pages/Museum/MuseumFlow';
+import { museumData } from './data/museumData';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('intro');
@@ -36,6 +38,35 @@ function App() {
   const handleBackToIntro = () => {
     console.log('인트로 마지막 단계로 돌아갑니다.');
     setCurrentPage('intro-back');
+  };
+
+  // 지도에서 단서 페이지로 돌아가는 함수
+  const handleBackToClue = () => {
+    console.log('지도에서 단서 페이지로 돌아갑니다.');
+    setCurrentPage('clue');
+  };
+
+  //---------------------------------------------------------  지도 미술관 데이터 선택 부분  ---------------------------------------------------------
+  //
+
+  // 1. 선택된 미술관 데이터를 저장할 공간
+  const [selectedMuseum, setSelectedMuseum] = useState(null);
+
+  // 2. 지도에서 핀을 클릭했을 때 실행될 함수
+  const handleMuseumClick = (museumId) => {
+    const museumInfo = museumData[museumId]; // 데이터 파일에서 정보 찾기
+    if (museumInfo) {
+      setSelectedMuseum(museumInfo); // 찾은 정보 저장
+      setCurrentPage('detail'); // 페이지 전환
+    } else {
+      console.error('미술관 데이터를 찾을 수 없습니다:', museumId);
+    }
+  };
+
+  // 3. 미술관 안에서 '나가기' 눌렀을 때 실행될 함수
+  const handleBackToMap = () => {
+    setCurrentPage('map');
+    setSelectedMuseum(null);
   };
 
   return (
@@ -116,7 +147,23 @@ function App() {
             transition={{ duration: 1 }}
             className="page-wrapper"
           >
-            <MapPage />
+            <MapPage
+              onMuseumSelect={handleMuseumClick}
+              onBack={handleBackToClue}
+            />
+          </motion.div>
+        )}
+
+        {/* 6. 미술관 상세 페이지 (MuseumFlow) */}
+        {currentPage === 'detail' && selectedMuseum && (
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="page-wrapper"
+          >
+            <MuseumFlow museumData={selectedMuseum} onBack={handleBackToMap} />
           </motion.div>
         )}
 

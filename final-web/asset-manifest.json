@@ -1,26 +1,34 @@
 {
   "files": {
-    "main.css": "./static/css/main.6f81d166.css",
-    "main.js": "./static/js/main.78b8bcd9.js",
+    "main.css": "./static/css/main.77ed3658.css",
+    "main.js": "./static/js/main.996aaca9.js",
+    "static/media/raft_of_the_medusa.png": "./static/media/raft_of_the_medusa.b0dab8574a21e0a59d46.png",
+    "static/media/astronomer.png": "./static/media/astronomer.6c286903fc853028f00d.png",
     "static/media/IntroBGM.mp3": "./static/media/IntroBGM.c8e4b339143644bc8fb2.mp3",
+    "static/media/pompidou_in.jpg": "./static/media/pompidou_in.8be1538f4f58806b2a9b.jpg",
+    "static/media/louvre_in.jpg": "./static/media/louvre_in.ba96a6d56f86651e8dd7.jpg",
     "static/media/card5.png": "./static/media/card5.3af83ba28d41d3c2d336.png",
     "static/media/card3.png": "./static/media/card3.db838d9472f34b90d2e4.png",
     "static/media/card2.png": "./static/media/card2.a8a2e8c28efa1816ee5a.png",
     "static/media/card4.png": "./static/media/card4.e24cf219c37a33b40387.png",
     "static/media/card1.png": "./static/media/card1.8feacc64181d4635ca7d.png",
+    "static/media/orsay_in.jpg": "./static/media/orsay_in.4e3e423fbbda71e8127c.jpg",
     "static/media/IntroBG.png": "./static/media/IntroBG.303c44ae0905f6d23bcd.png",
     "static/media/pompidou_out.jpg": "./static/media/pompidou_out.9d7a55fda87e50dd5016.jpg",
     "static/media/MuseumBG.jpg": "./static/media/MuseumBG.616cbe1174c50afd1d25.jpg",
     "static/media/orsay_out.jpg": "./static/media/orsay_out.ec933c9f852dbae4747c.jpg",
     "static/media/louvre_out.jpg": "./static/media/louvre_out.a547d04a70ae80dcd4e1.jpg",
+    "static/media/coronation_of_napoleon.png": "./static/media/coronation_of_napoleon.9c8d93a5df777b416d3a.png",
+    "static/media/diamond_ace_cheater.png": "./static/media/diamond_ace_cheater.6670d4d13503bb254e34.png",
+    "static/media/orangerie_in.jpg": "./static/media/orangerie_in.f8a831012c4e88220a97.jpg",
     "static/media/orangerie_out.jpg": "./static/media/orangerie_out.03a4062b1b3a7e75c73e.jpg",
     "static/media/RequestBG.jpg": "./static/media/RequestBG.174583c2a3c543b154fe.jpg",
     "index.html": "./index.html",
-    "main.6f81d166.css.map": "./static/css/main.6f81d166.css.map",
-    "main.78b8bcd9.js.map": "./static/js/main.78b8bcd9.js.map"
+    "main.77ed3658.css.map": "./static/css/main.77ed3658.css.map",
+    "main.996aaca9.js.map": "./static/js/main.996aaca9.js.map"
   },
   "entrypoints": [
-    "static/css/main.6f81d166.css",
-    "static/js/main.78b8bcd9.js"
+    "static/css/main.77ed3658.css",
+    "static/js/main.996aaca9.js"
   ]
 }

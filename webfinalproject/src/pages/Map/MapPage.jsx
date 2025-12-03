@@ -8,6 +8,7 @@ import {
 } from '@react-three/fiber';
 import { TextureLoader, Color, ClampToEdgeWrapping } from 'three';
 import './MapPage.css';
+import { ArrowLeft } from 'lucide-react';
 
 import { WaveShaderMaterial } from './WaveShaderMaterial';
 
@@ -19,12 +20,16 @@ import imgOrangerie from '../../assets/images/map/orangerie_out.jpg';
 extend({ WaveShaderMaterial });
 
 export const museums = [
-  { id: 0, name: 'Musee du Louvre', img: imgLouvre },
-  { id: 1, name: "Musee d'Orsay", img: imgOrsay },
-  { id: 2, name: 'Centre Pompidou', img: imgPompidou },
-  { id: 3, name: "Musee de l'Orangerie", img: imgOrangerie },
+  { id: 0, dataKey: 'louvre', name: 'Musee du Louvre', img: imgLouvre },
+  { id: 1, dataKey: 'orsay', name: "Musee d'Orsay", img: imgOrsay },
+  { id: 2, dataKey: 'pompidou', name: 'Centre Pompidou', img: imgPompidou },
+  {
+    id: 3,
+    dataKey: 'orangerie',
+    name: "Musee de l'Orangerie",
+    img: imgOrangerie,
+  },
 ];
-
 // --------------------------------------------------------
 // 3D 씬 컴포넌트 (배경과 중앙에서 재사용)
 // --------------------------------------------------------
@@ -91,21 +96,44 @@ const Scene = ({ currentIndex }) => {
 // --------------------------------------------------------
 // 메인 페이지 컴포넌트
 // --------------------------------------------------------
-const MapPage = () => {
+const MapPage = ({ onMuseumSelect, onBack }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
 
   const prevIdx = (currentIdx - 1 + museums.length) % museums.length;
   const nextIdx = (currentIdx + 1) % museums.length;
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     setCurrentIdx(nextIdx);
   };
-  const handlePrev = () => {
+  const handlePrev = (e) => {
+    e.stopPropagation();
     setCurrentIdx(prevIdx);
+  };
+
+  const handleImageClick = () => {
+    const selectedDataKey = museums[currentIdx].dataKey; // 현재 보고 있는 미술관의 ID 추출
+    console.log(`선택된 미술관: ${selectedDataKey}`);
+
+    if (onMuseumSelect) {
+      onMuseumSelect(selectedDataKey); // App.js로 ID 전달 -> 화면 전환!
+    }
   };
 
   return (
     <div className="map-container">
+      <div className="map-navbar">
+        <div
+          className="icon-btn"
+          onClick={(e) => {
+            e.stopPropagation(); // 배경 클릭 이벤트 전파 방지
+            onBack();
+          }}
+        >
+          <ArrowLeft color="white" size={24} />
+        </div>
+      </div>
+      
       {/* [수정] 1. 배경용 3D 캔버스 (흐린 셰이더 효과) */}
       <div className="bg-canvas-wrapper">
         {/* 중앙과 동일한 Scene을 사용해 같은 효과 적용 */}
@@ -115,7 +143,11 @@ const MapPage = () => {
       </div>
 
       {/* 2. 중앙 3D 캔버스 (선명한 물결 효과) - 기존 유지 */}
-      <div className="canvas-wrapper">
+      <div
+        className="canvas-wrapper"
+        onClick={handleImageClick}
+        style={{ cursor: 'pointer' }}
+      >
         <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene currentIndex={currentIdx} />
         </Canvas>
