@@ -13,6 +13,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Diphylleia', serif;
 }
 
 /* 3D 공간 설정 */
@@ -79,15 +80,9 @@
 }
 .description-text {
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: normal;
   margin-bottom: 40px;
   white-space: pre-wrap;
-}
-.selection-prompt {
-  text-align: center;
-  font-size: 1.2rem;
-  opacity: 0.7;
-  margin-top: 20px;
 }
 
 /* 닫기 버튼 */
@@ -118,6 +113,7 @@
     height: 60vh;
   }
   .description-text {
+    font-family: 'Diphylleia' !important;
     font-size: 0.95rem;
   }
   .modal-close-btn {

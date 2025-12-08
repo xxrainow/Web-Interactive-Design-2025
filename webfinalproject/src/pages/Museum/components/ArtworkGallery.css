@@ -140,8 +140,8 @@
   padding-left: 60px;
   flex: 1;
 }
-.art-title {
-  font-size: 3rem;
+.gallery-content .art-title {
+  font-size: 3.3rem !important;
   font-weight: 300;
   margin-bottom: 20px;
 
@@ -149,8 +149,8 @@
   white-space: pre-wrap; /* 줄바꿈 유지 */
   user-select: none;
 }
-.art-artist {
-  font-size: 1.3rem;
+.gallery-content.art-artist {
+  font-size: 1.5rem !important;
   opacity: 0.8;
 }
 .image-section {
@@ -160,8 +160,9 @@
   padding-right: 100px;
 }
 .image-section img {
-  max-width: 100%;
   max-height: 65vh;
+  width: auto;
+  max-width: 100%;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
   object-fit: contain;
 }

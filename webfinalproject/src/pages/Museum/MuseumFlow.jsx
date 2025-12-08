@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import MagnifyingIntro from './components/MagnifyingIntro'; 
+import MagnifyingIntro from './components/MagnifyingIntro';
 import ArtworkGallery from './components/ArtworkGallery';
 
 const MuseumFlow = ({ museumData, onBack }) => {
@@ -14,7 +14,6 @@ const MuseumFlow = ({ museumData, onBack }) => {
   return (
     <div className="museum-flow-container">
       <AnimatePresence mode="wait">
-        
         {/* 1단계: 미술관 내부 설명 화면 (돋보기 효과) */}
         {viewState === 'intro' && (
           <motion.div
@@ -28,9 +27,9 @@ const MuseumFlow = ({ museumData, onBack }) => {
             {/* ★ 중요: MagnifyingIntro는 이름(data.name)과 이미지(data.intro)가 다 필요해서
               museumData 전체를 넘겨줌
             */}
-            <MagnifyingIntro 
-              data={museumData} 
-              onNext={() => setViewState('gallery')} 
+            <MagnifyingIntro
+              data={museumData}
+              onNext={() => setViewState('gallery')}
             />
           </motion.div>
         )}
@@ -41,19 +40,18 @@ const MuseumFlow = ({ museumData, onBack }) => {
             key="gallery"
             initial={{ opacity: 0, x: 50 }} // 오른쪽에서 스윽 등장
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}   // 왼쪽으로 사라짐
+            exit={{ opacity: 0, x: -50 }} // 왼쪽으로 사라짐
             transition={{ duration: 0.5 }}
             className="flow-wrapper"
             style={{ width: '100%', height: '100%' }}
           >
-            <ArtworkGallery 
-              artworks={museumData.artworks} 
+            <ArtworkGallery
+              artworks={museumData.artworks}
               onBack={() => setViewState('intro')} // 다시 돋보기 보러 가기
               onExit={onBack} // 아예 지도로 나가기 (App.js의 handleBackToMap 실행)
             />
           </motion.div>
         )}
-
       </AnimatePresence>
     </div>
   );

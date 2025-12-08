@@ -66,9 +66,8 @@
 }
 
 .clue-title {
-  font-family: 'Noto Serif KR', serif; /* 명조체 */
   font-size: 1.3rem;
-  font-weight: 300;
+  font-weight: normal;
   color: #fff;
   color: #fbee7b; /* 금색 타이틀 */
   margin: 0;
@@ -82,7 +81,6 @@
 }
 
 .clue-desc-main {
-  font-family: 'Noto Serif KR', serif;
   font-size: 0.8rem;
   line-height: 1.8;
   font-weight: 300;

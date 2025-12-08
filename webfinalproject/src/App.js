@@ -10,6 +10,8 @@ import SearchLoadingPage from './pages/Story/SearchLoadingPage';
 import MapPage from './pages/Map/MapPage';
 import MuseumFlow from './pages/Museum/MuseumFlow';
 import { museumData } from './data/museumData';
+import ResultLoadingPage from './pages/Result/ResultLoadingPage';
+import ResultChoicePage from './pages/Result/ResultChoicePage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('map'); // 초기 페이지를 'loading'으로 설정
@@ -72,10 +74,22 @@ function App() {
     setSelectedMuseum(null);
   };
 
-  // 4. 지도에서 '최종 결정하러 가기' 버튼 클릭 시 실행될 함수
+  // 1. 지도에서 버튼 클릭 시 -> '결과 로딩' 화면으로 이동
   const handleFinalDecision = () => {
-    console.log('최종 결정 페이지(단서 페이지)로 이동합니다.');
+    console.log('최종 결정 클릭 -> 최종 페이지로 이동');
     setCurrentPage('final');
+  };
+
+  // 2. 최종 선택 후 로딩 완료 시 -> '결과 로딩' 화면으로 이동
+  const handleResultLoadingComplete = () => {
+    console.log('최종 선택 -> ');
+    setCurrentPage('result-loading');
+  };
+
+  // [추가됨] ★ 최종 결정 페이지에서 뒤로가기 (지도로 복귀)
+  const handleBackFromFinal = () => {
+    console.log('최종 페이지에서 지도로 돌아갑니다.');
+    setCurrentPage('map');
   };
 
   return (
@@ -175,6 +189,35 @@ function App() {
             className="page-wrapper"
           >
             <MuseumFlow museumData={selectedMuseum} onBack={handleBackToMap} />
+          </motion.div>
+        )}
+
+        {/* 7. 최종 결정 페이지 (ResultChoicePage) */}
+        {currentPage === 'final' && (
+          <motion.div
+            key="final"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="page-wrapper"
+          >
+            <ResultChoicePage
+              onComplete={handleResultLoadingComplete}
+              onBack={handleBackFromFinal}
+            />
+          </motion.div>
+        )}
+
+        {/* ★ 8. [추가됨] 결과 로딩 (ResultLoadingPage) */}
+        {currentPage === 'result-loading' && (
+          <motion.div
+            key="result-loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="page-wrapper"
+          >
+            <ResultLoadingPage />
           </motion.div>
         )}
 

@@ -37,9 +37,6 @@ const FlipCardModal = ({ artwork, onClose }) => {
           <div className="flip-card-back">
             <div className="back-content">
               <p className="description-text">{artwork.desc}</p>
-              <div className="selection-prompt">
-                이 작품으로 선택하시겠습니까?
-              </div>
             </div>
           </div>
         </motion.div>

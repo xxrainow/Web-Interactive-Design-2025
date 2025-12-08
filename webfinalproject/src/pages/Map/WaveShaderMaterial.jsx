@@ -57,7 +57,7 @@ const WaveShaderMaterial = shaderMaterial(
       vec2 uv = vUv;
 
       // 1. 노이즈 생성 (흐르는 액체 느낌)
-      float noise = snoise(uv * 4.0 + uTime * 0.1); 
+      float noise = snoise(uv * 1.0 + uTime * 0.1);
       
       // 2. 왜곡 강도 (전환될 때 uProgress에 따라 더 찢어짐)
       // 평소에는 0.02, 전환 중일 때는 최대 0.1까지 증가
