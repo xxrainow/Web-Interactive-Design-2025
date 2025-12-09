@@ -1,15 +1,27 @@
 // src/pages/Story/RequestPage.jsx
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 import './RequestPage.css';
 
-const RequestPage = ({ onNext, onBack }) => {
+const RequestPage = ({ onNext, onBack, isMusicPlaying, toggleMusic }) => {
   return (
     <div className="request-container">
-      {/* 상단 네비게이션 - 뒤로가기 버튼 */}
+      {/* 상단 네비게이션 */}
       <div className="request-navbar">
-        <div className="icon-btn" onClick={onBack}>
-          <ArrowLeft color="white" size={24} />
+        <div className="nav-left">
+          <div className="icon-btn" onClick={onBack}>
+            <ArrowLeft color="white" size={24} />
+          </div>
+        </div>
+
+        <div className="nav-right">
+          <div className="icon-btn" onClick={toggleMusic}>
+            {isMusicPlaying ? (
+              <Volume2 color="white" size={24} />
+            ) : (
+              <VolumeX color="white" size={24} />
+            )}
+          </div>
         </div>
       </div>
       {/* 중앙 의뢰서 카드 */}

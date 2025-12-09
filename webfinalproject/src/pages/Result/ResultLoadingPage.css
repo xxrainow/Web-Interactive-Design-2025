@@ -4,7 +4,6 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  /* 첨부하신 이미지를 저장 후 파일명을 맞춰주세요. 예: FinalDecideBG.jpg */
   background-image: url('../../assets/images/RequestBG.jpg');
   background-size: cover;
   background-position: center;

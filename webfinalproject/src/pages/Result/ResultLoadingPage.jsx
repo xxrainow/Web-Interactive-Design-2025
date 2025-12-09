@@ -7,7 +7,7 @@ const ResultLoadingPage = ({ onComplete, selectedArtName }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -28,7 +28,7 @@ const ResultLoadingPage = ({ onComplete, selectedArtName }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5, repeat: Infinity, repeatType: 'reverse' }}
       >
-        당신은 의뢰인에게 "{safeTitle}"을(를) 가져갔습니다
+        당신은 의뢰인에게 [{safeTitle}]을(를) 가져갔습니다
       </motion.div>
     </div>
   );

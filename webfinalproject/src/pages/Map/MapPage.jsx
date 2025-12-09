@@ -8,7 +8,7 @@ import {
 } from '@react-three/fiber';
 import { TextureLoader, Color, ClampToEdgeWrapping } from 'three';
 import './MapPage.css';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 
 import { WaveShaderMaterial } from './WaveShaderMaterial';
 
@@ -96,7 +96,7 @@ const Scene = ({ currentIndex }) => {
 // --------------------------------------------------------
 // 메인 페이지 컴포넌트
 // --------------------------------------------------------
-const MapPage = ({ onMuseumSelect, onBack, initialId, onFinalDecision }) => {
+const MapPage = ({ onMuseumSelect, onBack, initialId, onFinalDecision, isMusicPlaying, toggleMusic }) => {
   // 2. [수정] 초기 인덱스 계산 함수
   const getInitialIndex = () => {
     if (!initialId) return 0; // 없으면 0번(루브르)
@@ -133,9 +133,7 @@ const MapPage = ({ onMuseumSelect, onBack, initialId, onFinalDecision }) => {
     <div className="map-container">
       {/* 1. 상단 네비게이션 - 뒤로가기 버튼만 남김 */}
       <div className="map-navbar">
-        <div className="left-controls">
-          {' '}
-          {/* left-controls만 사용 */}
+        <div className="nav-left">
           <div
             className="icon-btn"
             onClick={(e) => {
@@ -146,7 +144,15 @@ const MapPage = ({ onMuseumSelect, onBack, initialId, onFinalDecision }) => {
             <ArrowLeft color="white" size={24} />
           </div>
         </div>
-        {/* right-controls는 제거하고, 하단 버튼을 별도로 만듭니다. */}
+        <div className="nav-right">
+          <div className="icon-btn" onClick={toggleMusic}>
+            {isMusicPlaying ? (
+              <Volume2 color="white" size={24} />
+            ) : (
+              <VolumeX color="white" size={24} />
+            )}
+          </div>
+        </div>
       </div>
 
       {/* [수정] 1. 배경용 3D 캔버스 (흐린 셰이더 효과) */}

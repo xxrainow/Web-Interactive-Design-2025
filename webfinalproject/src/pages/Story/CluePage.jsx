@@ -1,7 +1,7 @@
 // src/pages/Story/Clues/CluePage.jsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 import ClueCard from '../../components/ClueCard'; // 경로 확인
 import './CluePage.css';
 
@@ -51,7 +51,7 @@ const cluesData = [
   },
 ];
 
-const CluePage = ({ onNext, onBack }) => {
+const CluePage = ({ onNext, onBack, isMusicPlaying, toggleMusic }) => {
   // 현재 중앙에 있는 카드 인덱스 (초기값: 가운데 카드인 2번 인덱스)
   const [activeIndex, setActiveIndex] = useState(2);
   // 카드가 뒤집혔는지 상태 (오직 active 카드만 뒤집힘)
@@ -78,16 +78,29 @@ const CluePage = ({ onNext, onBack }) => {
     <div className="clue-page-container" onClick={handleBgClick}>
       {/* 상단 네비게이션 - 뒤로가기 버튼 */}
       <div className="clue-navbar">
-        <div
-          className="icon-btn"
-          onClick={(e) => {
-            e.stopPropagation(); // 배경 클릭 이벤트 전파 방지
-            onBack();
-          }}
-        >
-          <ArrowLeft color="white" size={24} />
+        <div className="nav-left">
+          <div
+            className="icon-btn"
+            onClick={(e) => {
+              e.stopPropagation(); // 배경 클릭 이벤트 전파 방지
+              onBack();
+            }}
+          >
+            <ArrowLeft color="white" size={24} />
+          </div>
+        </div>
+
+        <div className="nav-right">
+          <div className="icon-btn" onClick={toggleMusic}>
+            {isMusicPlaying ? (
+              <Volume2 color="white" size={24} />
+            ) : (
+              <VolumeX color="white" size={24} />
+            )}
+          </div>
         </div>
       </div>
+
       <div className="clue-overlay"></div>
 
       {/* 텍스트 안내 */}

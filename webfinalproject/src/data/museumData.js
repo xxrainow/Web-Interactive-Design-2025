@@ -21,10 +21,16 @@ import wedding from '../assets/images/museumdatas/orangerie/wedding.png';
 import portraitOfChanel from '../assets/images/museumdatas/orangerie/portrait_of_chanel.png';
 import stormySea from '../assets/images/museumdatas/orangerie/stormy_sea.png';
 
+import louvreBgm from '../assets/sounds/louvreBGM.mp3';
+import orsayBgm from '../assets/sounds/orsayBGM.mp3';
+import pompidouBgm from '../assets/sounds/pompidouBGM.mp3';
+import orangerieBgm from '../assets/sounds/orangerieBGM.mp3';
+
 export const museumData = {
   louvre: {
     id: 'louvre',
     name: 'Musée du Louvre',
+    audioSrc: louvreBgm,
     // 1단계: 미술관 내부 설명 데이터 (이미지 + 텍스트)
     intro: {
       image: louvreInside, // 내부 전경 이미지
@@ -67,6 +73,7 @@ export const museumData = {
   orsay: {
     id: 'orsay',
     name: 'Musée d’Orsay',
+    audioSrc: orsayBgm,
     intro: {
       image: orsayInside,
       title: '기차역에서 미술관으로',
@@ -108,6 +115,7 @@ export const museumData = {
   pompidou: {
     id: 'pompidou',
     name: 'Centre Pompidou',
+    audioSrc: pompidouBgm,
     intro: {
       image: pompidouInside,
       title: '현대미술의 성지',
@@ -148,6 +156,7 @@ export const museumData = {
   orangerie: {
     id: 'orangerie',
     name: "Musée de l'Orangerie",
+    audioSrc: orangerieBgm,
     intro: {
       image: orangerieInside,
       title: '자연과 예술의 만남',

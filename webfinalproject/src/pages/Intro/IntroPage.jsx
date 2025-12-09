@@ -6,10 +6,14 @@ import 'jquery.ripples';
 
 import IntroBG from '../../assets/images/IntroBG.png';
 import MuseumBG from '../../assets/images/MuseumBG.jpg';
-import bgMusic from '../../assets/sounds/IntroBGM.mp3';
+import IntroBGM from '../../assets/sounds/introBGM.mp3';
 
-const IntroPage = ({ onEnter, initialStep = 0 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+const IntroPage = ({
+  onEnter,
+  initialStep = 0,
+  isMusicPlaying,
+  toggleMusic,
+}) => {
   const audioRef = useRef(null);
   const bgRef = useRef(null);
   const [step, setStep] = useState(initialStep);
@@ -33,18 +37,6 @@ const IntroPage = ({ onEnter, initialStep = 0 }) => {
   }, [step]);
 
   // ---------------------------------------------------------
-
-  const toggleMusic = (e) => {
-    e.stopPropagation();
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
 
   const handleNext = useCallback(() => {
     if (step < 2) {
@@ -89,7 +81,7 @@ const IntroPage = ({ onEnter, initialStep = 0 }) => {
       } /* ★★★★★ 여기서 전체 클릭 감지, 클릭가능한 곳만 손모양으로 바뀜*/
       style={{ cursor: step === 1 ? 'pointer' : 'default' }}
     >
-      <audio ref={audioRef} src={bgMusic} loop />
+      <audio ref={audioRef} src={IntroBGM} loop />
 
       {step === 0 && (
         <div
@@ -109,7 +101,7 @@ const IntroPage = ({ onEnter, initialStep = 0 }) => {
       <div className="overlay"></div>
 
       {/* 🧭 상단 네비게이션 (구조 변경됨) */}
-      <header className="navbar">
+      <header className="intro-navbar">
         {/* [왼쪽] 뒤로가기 버튼 (Step 1부터 등장) */}
         <div className="nav-left">
           {step > 0 && (
@@ -132,7 +124,7 @@ const IntroPage = ({ onEnter, initialStep = 0 }) => {
         {/* [오른쪽] 음악 아이콘 */}
         <div className="nav-right">
           <div className="icon-btn" onClick={toggleMusic}>
-            {isPlaying ? (
+            {isMusicPlaying ? (
               <Volume2 color="white" size={24} />
             ) : (
               <VolumeX color="white" size={24} />
