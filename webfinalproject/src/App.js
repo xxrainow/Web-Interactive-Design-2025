@@ -26,6 +26,7 @@ function App() {
 
   // ★ [수정 1] audioRef 선언 필수
   const audioRef = useRef(null);
+  const currentTrackIdRef = useRef(null);
 
   const [selectedMuseum, setSelectedMuseum] = useState(null);
   const [lastViewedId, setLastViewedId] = useState('louvre');
@@ -38,18 +39,19 @@ function App() {
   const getBgmForPage = (pageName) => {
     switch (pageName) {
       case 'intro':
+      case 'intro-back': // ★ intro-back 추가!
       case 'request':
       case 'clue': // 단서 페이지도 인트로 음악 유지 추천
       case 'loading': // 로딩까지도 유지
-        return introBGM;
+        return { src: introBGM, id: 'INTRO' };
       case 'map':
-        return mapBGM;
+        return { src: mapBGM, id: 'MAP' };
       case 'detail': // 미술관 상세에서는 미술관별 음악이 나오므로 없음
-        return null;
+        return { src: null, id: 'NONE' };
       case 'final':
-        return mapBGM;
+        return { src: mapBGM, id: 'MAP' };
       default:
-        return mapBGM; // 기본값
+        return { src: mapBGM, id: 'MAP' }; // 기본값
     }
   };
 
@@ -59,45 +61,64 @@ function App() {
   useEffect(() => {
     if (!audioRef.current) return;
 
-    const targetSrc = getBgmForPage(currentPage);
+    const { src: targetSrc, id: targetId } = getBgmForPage(currentPage);
+
+    // 🔍 [디버그] useEffect 실행 시점
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🎵 [DEBUG] useEffect 실행됨');
+    console.log('📍 현재 페이지:', currentPage);
+    console.log('🎯 목표 BGM ID:', targetId);
+    console.log('💿 현재 저장된 ID:', currentTrackIdRef.current);
+    console.log('🔄 ID 같은가?:', currentTrackIdRef.current === targetId);
 
     const handleMusicChange = async () => {
-      // 1. 틀어야 할 음악이 없으면 멈춤
+      // 1. 틀어야 할 음악이 없는 경우 ('NONE')
       if (!targetSrc) {
+        console.log('⏸️ [DEBUG] 음악 없음 - 정지');
         audioRef.current.pause();
+        currentTrackIdRef.current = 'NONE';
         return;
       }
 
-      // 2. 이미 같은 음악이 설정되어 있다면? -> 아무것도 안 함 (Return)
-      // (src 속성 비교 시 전체 경로가 나오므로 includes로 확인)
-      if (audioRef.current.src && audioRef.current.src.includes(targetSrc)) {
-        if (isMusicPlaying && audioRef.current.paused) {
-          audioRef.current.play().catch((e) => console.log(e));
-        }
-        return;
+      // 2. ★★★ 같은 ID면 아무것도 하지 않음 (음악 유지) ★★★
+      if (currentTrackIdRef.current === targetId) {
+        console.log('✅ [DEBUG] ID 동일! 음악 유지 (새로고침 안 함)');
+        return; // 여기서 함수 종료 - 음악 그대로 유지
       }
 
-      // 3. 음악 교체 작업
+      // --- 여기서부터는 음악이 다를 때만 실행됨 ---
+      console.log('🔀 [DEBUG] ID 다름! 음악 교체 시작...');
+      console.log('   이전 ID:', currentTrackIdRef.current);
+      console.log('   새 ID:', targetId);
+
+      // 3. 현재 재생 중이었는지 기억
+      const wasPlaying = !audioRef.current.paused;
+      console.log('🎧 [DEBUG] 이전에 재생 중이었나?:', wasPlaying);
+
       try {
-        // 기존 음악 정지
+        // 4. 현재 트랙 ID 업데이트
+        currentTrackIdRef.current = targetId;
+        console.log('💾 [DEBUG] ID 업데이트됨:', currentTrackIdRef.current);
+
+        // 5. 기존 음악 정지 & 소스 교체
         audioRef.current.pause();
-
-        // 소스 교체
         audioRef.current.src = targetSrc;
-        audioRef.current.load(); // 새 소스 로드
+        audioRef.current.load();
+        console.log('📀 [DEBUG] 새 음악 로드됨');
 
-        // 재생 (사용자 인터랙션이 있었다고 가정)
-        if (isMusicPlaying) {
+        // 6. 이전에 재생 중이었다면 새 음악도 재생
+        if (wasPlaying) {
           audioRef.current.volume = 0.5;
           await audioRef.current.play();
+          console.log('▶️ [DEBUG] 새 음악 재생 시작');
         }
       } catch (err) {
-        console.log('음악 교체 중 오류:', err);
+        console.log('❌ 음악 교체 중 오류:', err);
       }
     };
 
     handleMusicChange();
-  }, [currentPage, isMusicPlaying]); // ★ page -> currentPage 수정
+  }, [currentPage]); // 페이지 변경 시에만 실행
 
   // 🎵 음악 토글 버튼 함수
   const toggleMusic = () => {
@@ -113,16 +134,14 @@ function App() {
 
   // 🎵 음악 강제 재생 시도 (클릭 시 등)
   const ensureMusicPlays = async () => {
-    if (audioRef.current && audioRef.current.paused) {
+    const { src } = getBgmForPage(currentPage); // 정보 가져오기
+    // 음악이 있는 페이지이고, 오디오가 멈춰있다면
+    if (src && audioRef.current && audioRef.current.paused) {
       audioRef.current.volume = 0.5;
       audioRef.current
         .play()
-        .then(() => {
-          setIsMusicPlaying(true);
-        })
-        .catch((err) => {
-          console.log('재생 실패 (아직 사용자 상호작용 부족):', err);
-        });
+        .then(() => setIsMusicPlaying(true))
+        .catch((e) => console.log(e));
     }
   };
 
