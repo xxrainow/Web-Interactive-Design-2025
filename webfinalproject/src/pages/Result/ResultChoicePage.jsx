@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { museumData } from '../../data/museumData';
-import { Search, ArrowLeft, HelpCircle } from 'lucide-react';
+import { Search, ArrowLeft, HelpCircle, Volume2, VolumeX } from 'lucide-react';
 import './ResultChoicePage.css';
 
-const ResultChoicePage = ({ onBack, onComplete }) => {
+const ResultChoicePage = ({
+  onBack,
+  onComplete,
+  isMusicPlaying,
+  toggleMusic,
+}) => {
   const [selectedArt, setSelectedArt] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -40,14 +45,14 @@ const ResultChoicePage = ({ onBack, onComplete }) => {
   };
 
   return (
-    <div className="result-page-container">
+    <div className="resultchoice-page-container">
       {/* ★ 모달창 (Portal 사용, AnimatePresence 제거, CSS 클래스 사용) */}
       {showConfirmModal &&
         createPortal(
           <div className="confirm-overlay">
             <motion.div
               className="confirm-box"
-              // 켜질 때 뿅! 하고 나타나는 효과만 줍니다 (버그 없음)
+              // 켜질 때 뿅! 하고 나타나는 효과만 줍니다 (버  그 없음)
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
@@ -81,15 +86,26 @@ const ResultChoicePage = ({ onBack, onComplete }) => {
         )}
 
       {/* --- 상단 네비게이션 --- */}
-      <div className="clue-navbar">
-        <div
-          className="icon-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onBack();
-          }}
-        >
-          <ArrowLeft color="white" size={24} />
+      <div className="resultchoice-navbar">
+        <div className="nav-left">
+          <div
+            className="icon-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onBack();
+            }}
+          >
+            <ArrowLeft color="white" size={24} />
+          </div>
+        </div>
+        <div className="nav-right">
+          <div className="icon-btn" onClick={toggleMusic}>
+            {isMusicPlaying ? (
+              <Volume2 color="white" size={24} />
+            ) : (
+              <VolumeX color="white" size={24} />
+            )}
+          </div>
         </div>
       </div>
 

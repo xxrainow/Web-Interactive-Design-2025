@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+KR:wght@300;400;700&display=swap');
 
-.result-page-container {
+.resultchoice-page-container {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
@@ -24,12 +24,18 @@
   margin: 0 auto;
 }
 
-/* --- 상단 뒤로가기 버튼 --- */
-.clue-navbar {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 200;
+/* --- 상단 네비게이션 바 --- */
+.resultchoice-navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 100;
+  box-sizing: border-box;
 }
 
 .icon-btn {
