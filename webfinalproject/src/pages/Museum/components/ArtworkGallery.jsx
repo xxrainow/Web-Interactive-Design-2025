@@ -78,6 +78,59 @@ const ArtworkGallery = ({ artworks, onExit, onClue }) => {
 
   return (
     <div className="gallery-container">
+      {/* SVG 필터 정의 영역 */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        {/* 1. [기존] 배경용 강한 안개 필터 */}
+        <filter id="fog-haze">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.1"
+            numOctaves="2"
+            result="warp"
+          >
+            <animate
+              attributeName="baseFrequency"
+              values="0.015; 0.025; 0.015"
+              dur="30s"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          <feDisplacementMap
+            xChannelSelector="R"
+            yChannelSelector="G"
+            scale="30"
+            in="SourceGraphic"
+            in2="warp"
+          />
+        </filter>
+
+        {/* ★ 2. [추가됨] 메인 이미지용 약한 안개 필터 (Weak) */}
+        <filter id="fog-haze-weak">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.0001"
+            numOctaves="1"
+            result="warp"
+          >
+            {/* 배경보다 조금 더 천천히 움직이도록 설정 (dur: 20s) */}
+            <animate
+              attributeName="baseFrequency"
+              values="0.009; 0.01; 0.011"
+              dur="10s"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          {/* scale을 5로 설정하여 살짝만 일렁이게 함 (배경은 40) */}
+          <feDisplacementMap
+            xChannelSelector="R"
+            yChannelSelector="G"
+            scale="20"
+            in="SourceGraphic"
+            in2="warp"
+          />
+        </filter>
+      </svg>
+
       {/* ★ 1. 배경 블러 이미지 */}
       <AnimatePresence mode="wait">
         <motion.div

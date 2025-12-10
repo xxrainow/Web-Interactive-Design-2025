@@ -14,6 +14,24 @@
   position: relative;
 }
 
+.glass-background-layer {
+  position: fixed;
+  top: -10%; /* 왜곡이 심하므로 여백을 더 줍니다 */
+  left: -10%;
+  width: 120%;
+  height: 120%;
+
+  /* 배경 이미지 (보내주신 RequestBG.jpg 사용) */
+  background-image: url('../../assets/images/RequestBG.jpg');
+  background-size: cover;
+  background-position: center;
+
+  filter: contrast(1.2) brightness(0.8) url(#glass-refraction-filter);
+
+  z-index: 0;
+  transform: scale(1.1);
+}
+
 .result-page-container::-webkit-scrollbar {
   display: none;
 }
@@ -34,7 +52,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  z-index: 100;
+  z-index: 100; /* 오버레이보다 위에 있어야 함 */
   box-sizing: border-box;
 }
 

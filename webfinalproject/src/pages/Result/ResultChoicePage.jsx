@@ -52,7 +52,7 @@ const ResultChoicePage = ({
           <div className="confirm-overlay">
             <motion.div
               className="confirm-box"
-              // 켜질 때 뿅! 하고 나타나는 효과만 줍니다 (버  그 없음)
+              // 켜질 때 뿅! 하고 나타나는 효과만 줍니다 (버그 없음)
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
@@ -84,7 +84,39 @@ const ResultChoicePage = ({
           </div>,
           document.body
         )}
+      {/* ★ [수정됨] 카우스틱스(Caustics) / 액체 유리 효과 필터 */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <filter id="glass-refraction-filter">
+          {/* turbulence: 
+              numOctaves를 1로 낮춰서 '매끈한' 곡선을 만듭니다. (연기 느낌 제거)
+              baseFrequency를 0.003으로 낮춰서 '큰' 물결을 만듭니다. 
+          */}
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.003"
+            numOctaves="0.1"
+            result="warp"
+          >
+            {/* 천천히, 묵직하게 움직이는 애니메이션 (20초) */}
+            <animate
+              attributeName="baseFrequency"
+              values="0.003; 0.005; 0.003"
+              dur="20s"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
 
+          {/* scale을 60으로 높여서 굴절을 강하게 줍니다 (유리처럼 휘어짐) */}
+          <feDisplacementMap
+            xChannelSelector="R"
+            yChannelSelector="G"
+            scale="60"
+            in="SourceGraphic"
+            in2="warp"
+          />
+        </filter>
+      </svg>
+      <div className="glass-background-layer" />
       {/* --- 상단 네비게이션 --- */}
       <div className="resultchoice-navbar">
         <div className="nav-left">
@@ -98,6 +130,7 @@ const ResultChoicePage = ({
             <ArrowLeft color="white" size={24} />
           </div>
         </div>
+
         <div className="nav-right">
           <div className="icon-btn" onClick={toggleMusic}>
             {isMusicPlaying ? (
