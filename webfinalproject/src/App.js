@@ -19,6 +19,7 @@ import FailPage from './pages/Result/FailPage';
 // 음악 파일
 import introBGM from './assets/sounds/introBGM.mp3';
 import mapBGM from './assets/sounds/mapBGM.mp3';
+import completeBGM from './assets/sounds/completeBGM.mp3';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('intro');
@@ -100,6 +101,8 @@ function App() {
         return { src: null, id: 'NONE' };
       case 'final':
         return { src: mapBGM, id: 'MAP' };
+      case 'complete':
+        return { src: completeBGM, id: 'COMPLETE' };
       default:
         return { src: mapBGM, id: 'MAP' };
     }
@@ -274,7 +277,17 @@ function App() {
     setCurrentPage('result-loading');
   };
 
-  const handleResultReveal = () => setCurrentPage('result-outcome');
+  const handleResultReveal = () => {
+    // 선택한 작품에 따라 complete 또는 fail 페이지로 분리
+    if (
+      selectedArt.name &&
+      selectedArt.name.includes('아를의 별이 빛나는 밤')
+    ) {
+      setCurrentPage('complete');
+    } else {
+      setCurrentPage('fail');
+    }
+  };
 
   const handleRetry = () => {
     setCurrentPage('map');
@@ -410,28 +423,35 @@ function App() {
             />
           </motion.div>
         )}
-        {currentPage === 'result-outcome' && (
+        {currentPage === 'complete' && (
           <motion.div
-            key="result-outcome"
+            key="complete"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, delay: 1.5 }}
+            className="page-wrapper"
+          >
+            <CompletePage
+              selectedArtName={selectedArt.name}
+              selectedArtImage={selectedArt.image}
+              onReset={handleBackToIntro}
+            />
+          </motion.div>
+        )}
+        {currentPage === 'fail' && (
+          <motion.div
+            key="fail"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="page-wrapper"
           >
-            {selectedArt.name &&
-            selectedArt.name.includes('아를의 별이 빛나는 밤') ? (
-              <CompletePage
-                selectedArtName={selectedArt.name}
-                selectedArtImage={selectedArt.image}
-                onReset={handleBackToIntro}
-              />
-            ) : (
-              <FailPage
-                selectedArtName={selectedArt.name}
-                selectedArtImage={selectedArt.image}
-                onRetry={handleRetry}
-              />
-            )}
+            <FailPage
+              selectedArtName={selectedArt.name}
+              selectedArtImage={selectedArt.image}
+              onRetry={handleRetry}
+            />
           </motion.div>
         )}
         {currentPage === 'intro-back' && (

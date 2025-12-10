@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "./static/css/main.71885ed1.css",
-    "main.js": "./static/js/main.20984eca.js",
+    "main.js": "./static/js/main.21c9b1e8.js",
     "static/media/raft_of_the_medusa.png": "./static/media/raft_of_the_medusa.b0dab8574a21e0a59d46.png",
     "static/media/astronomer.png": "./static/media/astronomer.6c286903fc853028f00d.png",
     "static/media/blue_ii.png": "./static/media/blue_ii.4265658a4110e8855363.png",
@@ -14,6 +14,7 @@
     "static/media/card4.png": "./static/media/card4.e24cf219c37a33b40387.png",
     "static/media/card1.png": "./static/media/card1.8feacc64181d4635ca7d.png",
     "static/media/orsay_in.jpg": "./static/media/orsay_in.4e3e423fbbda71e8127c.jpg",
+    "static/media/completeBGM.mp3": "./static/media/completeBGM.439363f24cf42b10548e.mp3",
     "static/media/introBGM.mp3": "./static/media/introBGM.e7807a7bf9463a7cb774.mp3",
     "static/media/IntroBG.png": "./static/media/IntroBG.303c44ae0905f6d23bcd.png",
     "static/media/pompidou_out.jpg": "./static/media/pompidou_out.9d7a55fda87e50dd5016.jpg",
@@ -43,10 +44,10 @@
     "static/media/blue_monochrome_ikb_3.png": "./static/media/blue_monochrome_ikb_3.3ff4a0444326ef24d7c3.png",
     "index.html": "./index.html",
     "main.71885ed1.css.map": "./static/css/main.71885ed1.css.map",
-    "main.20984eca.js.map": "./static/js/main.20984eca.js.map"
+    "main.21c9b1e8.js.map": "./static/js/main.21c9b1e8.js.map"
   },
   "entrypoints": [
     "static/css/main.71885ed1.css",
-    "static/js/main.20984eca.js"
+    "static/js/main.21c9b1e8.js"
   ]
 }
