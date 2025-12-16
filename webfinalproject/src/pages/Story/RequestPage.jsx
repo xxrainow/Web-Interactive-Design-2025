@@ -32,7 +32,7 @@ const RequestPage = ({ onNext, onBack, isMusicPlaying, toggleMusic }) => {
         <h1 className="card-title">Request</h1>
         <p className="card-number">001</p>
 
-        <p className="to-whom">To. X</p>
+        <p className="to-whom">To. Z</p>
 
         <div className="card-content">
           <p>꿈에서 본 장면이 잊히지 않습니다.</p>

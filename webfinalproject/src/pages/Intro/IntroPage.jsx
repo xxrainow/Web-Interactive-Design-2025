@@ -112,7 +112,7 @@ const IntroPage = ({
         </div>
 
         {/* [중앙] Info / List */}
-        <div className="nav-center">
+        {/*<div className="nav-center">
           {step === 0 && (
             <div className="nav-links fade-in">
               <span className="nav-item">info</span>
@@ -120,6 +120,7 @@ const IntroPage = ({
             </div>
           )}
         </div>
+        */}
 
         {/* [오른쪽] 음악 아이콘 */}
         <div className="nav-right">
